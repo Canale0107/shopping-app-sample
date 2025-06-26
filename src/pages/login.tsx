@@ -2,11 +2,10 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-export default function Login() {
+export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +16,7 @@ export default function Login() {
       password,
     });
     if (res?.ok) {
-      router.push("/profile");
+      if (onSuccess) onSuccess();
     } else {
       setError("メールアドレスまたはパスワードが正しくありません");
     }
@@ -50,4 +49,9 @@ export default function Login() {
       </form>
     </div>
   );
+}
+
+export default function Login() {
+  const router = useRouter();
+  return <LoginForm onSuccess={() => router.push("/profile")} />;
 }

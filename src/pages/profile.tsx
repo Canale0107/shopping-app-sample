@@ -3,8 +3,9 @@ import { GetServerSideProps } from "next";
 import { prisma } from "../lib/prisma";
 
 export default function Profile({ member, orders }: any) {
-  const { data: session } = useSession();
-  if (!session) return <div>Loading...</div>;
+  const { data: session, status } = useSession();
+  if (status === "loading") return null;
+  if (!session) return null;
   return (
     <div style={{ maxWidth: 800, margin: "2rem auto" }}>
       <h1>会員情報</h1>
