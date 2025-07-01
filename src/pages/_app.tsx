@@ -206,20 +206,11 @@ export default function App({
         <Header onLoginClick={() => setShowLoginModal(true)} />
         {showLoginModal && (
           <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              background: "rgba(0,0,0,0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 1000,
-            }}
+            className="modal-backdrop"
+            onClick={() => setShowLoginModal(false)}
           >
             <div
+              className="modal-content"
               style={{
                 background: "#fff",
                 padding: 32,
@@ -227,6 +218,7 @@ export default function App({
                 minWidth: 350,
                 position: "relative",
               }}
+              onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setShowLoginModal(false)}
@@ -248,6 +240,7 @@ export default function App({
                 <Link
                   href="/register"
                   style={{ textDecoration: "underline", color: "#0070f3" }}
+                  onClick={() => setShowLoginModal(false)}
                 >
                   新規登録はこちら
                 </Link>
