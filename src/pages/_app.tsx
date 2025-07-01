@@ -37,8 +37,41 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
         </span>
       </Link>
       <nav style={{ display: "flex", alignItems: "center" }}>
+        {status === "loading" ? null : session ? (
+          <>
+            <span
+              onClick={handleProfileClick}
+              style={{
+                marginRight: 16,
+                textDecoration: "underline",
+                color: "#0070f3",
+                cursor: "pointer",
+              }}
+            >
+              会員情報
+            </span>
+            <span style={{ marginRight: 16 }}>
+              ようこそ、{session.user?.name || session.user?.email} さん
+            </span>
+            <button onClick={() => signOut({ callbackUrl: "/" })}>
+              ログアウト
+            </button>
+          </>
+        ) : (
+          <>
+            <button onClick={onLoginClick} style={{ marginRight: 12 }}>
+              ログイン
+            </button>
+            <Link
+              href="/register"
+              style={{ textDecoration: "underline", color: "#0070f3" }}
+            >
+              新規登録
+            </Link>
+          </>
+        )}
         <span
-          style={{ marginRight: 24, position: "relative", cursor: "pointer" }}
+          style={{ marginLeft: 24, position: "relative", cursor: "pointer" }}
           onClick={() => router.push("/cart")}
           aria-label="カート"
         >
@@ -76,39 +109,6 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
             </span>
           )}
         </span>
-        {status === "loading" ? null : session ? (
-          <>
-            <span
-              onClick={handleProfileClick}
-              style={{
-                marginRight: 16,
-                textDecoration: "underline",
-                color: "#0070f3",
-                cursor: "pointer",
-              }}
-            >
-              会員情報
-            </span>
-            <span style={{ marginRight: 16 }}>
-              ようこそ、{session.user?.name || session.user?.email} さん
-            </span>
-            <button onClick={() => signOut({ callbackUrl: "/" })}>
-              ログアウト
-            </button>
-          </>
-        ) : (
-          <>
-            <button onClick={onLoginClick} style={{ marginRight: 12 }}>
-              ログイン
-            </button>
-            <Link
-              href="/register"
-              style={{ textDecoration: "underline", color: "#0070f3" }}
-            >
-              新規登録
-            </Link>
-          </>
-        )}
       </nav>
     </header>
   );
