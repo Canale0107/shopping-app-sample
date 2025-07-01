@@ -1,6 +1,6 @@
 import os
 from tensorflow.keras.datasets import fashion_mnist
-from PIL import Image
+from PIL import Image, ImageOps
 
 # カテゴリ名リスト
 LABELS = [
@@ -33,11 +33,12 @@ for img, label in zip(x_train, y_train):
         idx = saved_count[label] + 1
         filename = f"{category}_{idx:02d}.png"
         filepath = os.path.join(SAVE_DIR, filename)
-        # 画像をPILで保存
+        # 画像をPILで白黒反転して保存
         im = Image.fromarray(img)
+        im = ImageOps.invert(im)
         im.save(filepath)
         saved_count[label] += 1
     if all(count >= num_per_category for count in saved_count.values()):
         break
 
-print(f"Saved {num_per_category} images for each category in {SAVE_DIR}") 
+print(f"Saved {num_per_category} images for each category in {SAVE_DIR} (inverted)") 
