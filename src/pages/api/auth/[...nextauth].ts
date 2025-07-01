@@ -2,8 +2,9 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "../../../lib/prisma";
 import { compare } from "bcryptjs";
+import type { SessionStrategy } from "next-auth";
 
-export default NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -27,8 +28,10 @@ export default NextAuth({
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt" as SessionStrategy },
   pages: {
     signIn: "/login",
   },
-});
+};
+
+export default NextAuth(authOptions);

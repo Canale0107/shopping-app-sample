@@ -1,1 +1,6 @@
+# PostgreSQLの接続情報（ユーザー名・パスワード・DB名などを自分の環境に合わせて設定してください）
 DATABASE_URL="postgresql://postgres:password@localhost:5432/shopping"
+
+# NextAuth用のセッション暗号化キー
+# 本番では `openssl rand -base64 32` などで生成した32文字以上のランダムな値を設定してください
+NEXTAUTH_SECRET=your-random-secret-here

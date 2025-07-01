@@ -1,9 +1,11 @@
 import { useCart } from "../lib/CartContext";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const router = useRouter();
 
   return (
     <div style={{ maxWidth: 600, margin: "0 auto" }}>
@@ -116,8 +118,9 @@ export default function CartPage() {
                 padding: "8px 24px",
                 cursor: "pointer",
               }}
+              onClick={() => router.push("/cart/confirm")}
             >
-              購入する（ダミー）
+              購入する
             </button>
           </div>
         </>
