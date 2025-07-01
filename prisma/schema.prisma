@@ -32,6 +32,7 @@ model Product {
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   orders      Order[]
+  imageUrl    String?  // 画像パス
 }
 
 model Order {
