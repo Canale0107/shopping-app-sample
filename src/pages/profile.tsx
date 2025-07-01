@@ -9,6 +9,8 @@ export default function Profile({ member, orders }: any) {
   const [name, setName] = useState(member.membername);
   const [address, setAddress] = useState(member.address);
   const [phone, setPhone] = useState(member.phone);
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState("");
   if (status === "loading") return null;
@@ -17,15 +19,24 @@ export default function Profile({ member, orders }: any) {
     e.preventDefault();
     setSaveError("");
     setSaveSuccess("");
-    // API実装後にPUTリクエストを送る
+    if (password && password.length < 6) {
+      setSaveError("パスワードは6文字以上で入力してください");
+      return;
+    }
+    if (password && password !== passwordConfirm) {
+      setSaveError("パスワードが一致しません");
+      return;
+    }
     const res = await fetch("/api/member", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, address, phone }),
+      body: JSON.stringify({ name, address, phone, password }),
     });
     if (res.ok) {
       setSaveSuccess("会員情報を更新しました");
       setEditing(false);
+      setPassword("");
+      setPasswordConfirm("");
     } else {
       const data = await res.json();
       setSaveError(data.error || "更新に失敗しました");
@@ -61,6 +72,24 @@ export default function Profile({ member, orders }: any) {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
+            />
+          </div>
+          <div>
+            <label>新しいパスワード（6文字以上）</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+          <div>
+            <label>パスワード（確認）</label>
+            <input
+              type="password"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              autoComplete="new-password"
             />
           </div>
           {saveError && <p style={{ color: "red" }}>{saveError}</p>}

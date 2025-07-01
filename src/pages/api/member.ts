@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./auth/[...nextauth]";
 import { prisma } from "../../lib/prisma";
+import bcrypt from "bcryptjs";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,21 +11,30 @@ export default async function handler(
   if (req.method !== "PUT") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
   if (!session?.user?.email) {
     return res.status(401).json({ error: "未認証です" });
   }
-  const { name, address, phone } = req.body;
+  const { name, address, phone, password } = req.body;
   if (!name || !address || !phone) {
     return res.status(400).json({ error: "全ての項目を入力してください" });
   }
+  const data: any = {
+    membername: name,
+    address,
+    phone,
+  };
+  if (password) {
+    if (typeof password !== "string" || password.length < 6) {
+      return res
+        .status(400)
+        .json({ error: "パスワードは6文字以上で入力してください" });
+    }
+    data.password = await bcrypt.hash(password, 10);
+  }
   await prisma.member.update({
     where: { memberid: session.user.email },
-    data: {
-      membername: name,
-      address,
-      phone,
-    },
+    data,
   });
   return res.status(200).json({ message: "更新完了" });
 }
