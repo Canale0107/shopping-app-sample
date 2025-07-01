@@ -43,127 +43,132 @@ export default function Profile({ member, orders }: any) {
     }
   };
   return (
-    <div style={{ maxWidth: 800, margin: "2rem auto" }}>
-      <h1>会員情報</h1>
-      {editing ? (
-        <form onSubmit={handleSave} style={{ marginBottom: 24 }}>
-          <div>
-            <label>名前</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>住所</label>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>電話番号</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>新しいパスワード（6文字以上）</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
-            />
-          </div>
-          <div>
-            <label>パスワード（確認）</label>
-            <input
-              type="password"
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-              autoComplete="new-password"
-            />
-          </div>
-          {saveError && <p style={{ color: "red" }}>{saveError}</p>}
-          {saveSuccess && <p style={{ color: "green" }}>{saveSuccess}</p>}
-          <button type="submit">保存</button>
-          <button
-            type="button"
-            onClick={() => setEditing(false)}
-            style={{ marginLeft: 12 }}
-          >
-            キャンセル
-          </button>
-        </form>
-      ) : (
-        <>
-          <ul>
-            <li>
-              <strong>現在のポイント:</strong> {member.memberpoint}
-            </li>
-            <li>
-              <strong>会員ID:</strong> {member.memberid}
-            </li>
-            <li>
-              <strong>名前:</strong> {name}
-            </li>
-            <li>
-              <strong>住所:</strong> {address}
-            </li>
-            <li>
-              <strong>電話番号:</strong> {phone}
-            </li>
-          </ul>
-          <button onClick={() => setEditing(true)} style={{ marginBottom: 24 }}>
-            編集
-          </button>
-        </>
-      )}
-      <h2>注文履歴</h2>
-      <table
-        border="1"
-        cellPadding={8}
-        style={{ width: "100%", borderCollapse: "collapse" }}
-      >
-        <thead>
-          <tr>
-            <th>日付</th>
-            <th>商品ID</th>
-            <th>商品名</th>
-            <th>価格</th>
-            <th>お買い上げ数量</th>
-            <th>金額</th>
-            <th>ポイント</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.length === 0 ? (
+    <div className="main-area">
+      <div style={{ maxWidth: 800, margin: "2rem auto" }}>
+        <h1>会員情報</h1>
+        {editing ? (
+          <form onSubmit={handleSave} style={{ marginBottom: 24 }}>
+            <div>
+              <label>名前</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label>住所</label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label>電話番号</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label>新しいパスワード（6文字以上）</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+              />
+            </div>
+            <div>
+              <label>パスワード（確認）</label>
+              <input
+                type="password"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+                autoComplete="new-password"
+              />
+            </div>
+            {saveError && <p style={{ color: "red" }}>{saveError}</p>}
+            {saveSuccess && <p style={{ color: "green" }}>{saveSuccess}</p>}
+            <button type="submit">保存</button>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              style={{ marginLeft: 12 }}
+            >
+              キャンセル
+            </button>
+          </form>
+        ) : (
+          <>
+            <ul>
+              <li>
+                <strong>現在のポイント:</strong> {member.memberpoint}
+              </li>
+              <li>
+                <strong>会員ID:</strong> {member.memberid}
+              </li>
+              <li>
+                <strong>名前:</strong> {name}
+              </li>
+              <li>
+                <strong>住所:</strong> {address}
+              </li>
+              <li>
+                <strong>電話番号:</strong> {phone}
+              </li>
+            </ul>
+            <button
+              onClick={() => setEditing(true)}
+              style={{ marginBottom: 24 }}
+            >
+              編集
+            </button>
+          </>
+        )}
+        <h2>注文履歴</h2>
+        <table
+          border="1"
+          cellPadding={8}
+          style={{ width: "100%", borderCollapse: "collapse" }}
+        >
+          <thead>
             <tr>
-              <td colSpan={7}>注文履歴はありません</td>
+              <th>日付</th>
+              <th>商品ID</th>
+              <th>商品名</th>
+              <th>価格</th>
+              <th>お買い上げ数量</th>
+              <th>金額</th>
+              <th>ポイント</th>
             </tr>
-          ) : (
-            orders.map((order: any) => (
-              <tr key={order.orderid}>
-                <td>{order.orderdate.slice(0, 10)}</td>
-                <td>{order.productid}</td>
-                <td>{order.product.name}</td>
-                <td>{order.price}</td>
-                <td>{order.quantity}</td>
-                <td>{order.price * order.quantity}</td>
-                <td>{order.point * order.quantity}</td>
+          </thead>
+          <tbody>
+            {orders.length === 0 ? (
+              <tr>
+                <td colSpan={7}>注文履歴はありません</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              orders.map((order: any) => (
+                <tr key={order.orderid}>
+                  <td>{order.orderdate.slice(0, 10)}</td>
+                  <td>{order.productid}</td>
+                  <td>{order.product.name}</td>
+                  <td>{order.price}</td>
+                  <td>{order.quantity}</td>
+                  <td>{order.price * order.quantity}</td>
+                  <td>{order.point * order.quantity}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

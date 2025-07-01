@@ -20,7 +20,7 @@ export default function Home({
       (p: any) => p.categoryId === selectedCategoryId
     );
     return (
-      <div>
+      <div className="main-area">
         <h1>{selectedCategory?.name}の商品一覧</h1>
         <button onClick={() => router.push("/")} style={{ marginBottom: 16 }}>
           カテゴリ一覧に戻る
@@ -86,7 +86,7 @@ export default function Home({
 
   // カテゴリ一覧
   return (
-    <div>
+    <div className="main-area">
       <h1>カテゴリ一覧</h1>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 32 }}>
         {categories.map((cat: any) => {

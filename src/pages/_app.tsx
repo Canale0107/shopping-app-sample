@@ -5,6 +5,7 @@ import { useState } from "react";
 import { LoginForm } from "./login";
 import { useRouter } from "next/router";
 import { CartProvider, useCart } from "../lib/CartContext";
+import "../styles/global.css";
 
 function Header({ onLoginClick }: { onLoginClick: () => void }) {
   const { data: session, status } = useSession();
@@ -25,12 +26,12 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
         justifyContent: "space-between",
         alignItems: "center",
         padding: "1rem",
-        background: "#f5f5f5",
         marginBottom: "2rem",
       }}
     >
       <Link href="/">
         <span
+          className="header-logo"
           style={{ fontWeight: "bold", fontSize: "1.2rem", cursor: "pointer" }}
         >
           ショッピングサイト
@@ -39,37 +40,32 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
       <nav style={{ display: "flex", alignItems: "center" }}>
         {status === "loading" ? null : session ? (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div
+            <span style={{ fontWeight: "bold", marginRight: 16 }}>
+              ようこそ、{session.user?.name || session.user?.email} さん
+            </span>
+            <span
+              onClick={handleProfileClick}
               style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-end",
-                marginRight: 24,
+                marginRight: 16,
+                textDecoration: "underline",
+                color: "#fff",
+                cursor: "pointer",
+                fontWeight: 500,
               }}
             >
-              <span style={{ fontWeight: "bold", marginBottom: 4 }}>
-                ようこそ、{session.user?.name || session.user?.email} さん
-              </span>
-              <div>
-                <span
-                  onClick={handleProfileClick}
-                  style={{
-                    marginRight: 16,
-                    textDecoration: "underline",
-                    color: "#0070f3",
-                    cursor: "pointer",
-                  }}
-                >
-                  会員情報
-                </span>
-                <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  style={{ marginRight: 0 }}
-                >
-                  ログアウト
-                </button>
-              </div>
-            </div>
+              会員情報
+            </span>
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              style={{
+                marginRight: 24,
+                background: "#fff",
+                color: "#2563eb",
+                fontWeight: 500,
+              }}
+            >
+              ログアウト
+            </button>
             <span
               style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
               onClick={() => router.push("/cart")}
@@ -80,7 +76,7 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
                 height="28"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#333"
+                stroke="#fff"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -121,11 +117,27 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
               <button onClick={onLoginClick} style={{ marginRight: 12 }}>
                 ログイン
               </button>
-              <Link
-                href="/register"
-                style={{ textDecoration: "underline", color: "#0070f3" }}
-              >
-                新規登録
+              <Link href="/register" legacyBehavior>
+                <a
+                  className="register-btn"
+                  style={{
+                    background: "#fff",
+                    color: "#2563eb",
+                    borderRadius: 6,
+                    padding: "8px 18px",
+                    fontWeight: 500,
+                    fontSize: "1rem",
+                    marginLeft: 8,
+                    textDecoration: "none",
+                    border: "none",
+                    display: "inline-block",
+                    transition: "background 0.2s, color 0.2s",
+                    boxShadow: "0 1px 4px rgba(30,64,175,0.04)",
+                    cursor: "pointer",
+                  }}
+                >
+                  新規登録
+                </a>
               </Link>
             </div>
             <span
@@ -142,7 +154,7 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
                 height="28"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#333"
+                stroke="#fff"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"

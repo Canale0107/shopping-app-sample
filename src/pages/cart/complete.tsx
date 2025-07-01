@@ -2,7 +2,10 @@ import Link from "next/link";
 
 export default function CartCompletePage() {
   return (
-    <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+    <div
+      className="main-area"
+      style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}
+    >
       <h1>ご注文ありがとうございました！</h1>
       <p>ご注文が正常に完了しました。</p>
       <div style={{ marginTop: 32 }}>
