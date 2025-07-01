@@ -13,7 +13,6 @@ services:
       - db_data:/var/lib/postgresql/data
   app:
     build: .
-    command: sh -c "npx prisma migrate deploy && npm run dev"
     ports:
       - "3000:3000"
     environment:

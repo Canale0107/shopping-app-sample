@@ -1,21 +1,9 @@
-# Install dependencies only when needed
-FROM node:20-alpine AS deps
+# Development environment
+FROM node:20-alpine
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
-
-# Rebuild the source code only when needed
-FROM node:20-alpine AS builder
-WORKDIR /app
 COPY . .
-COPY --from=deps /app/node_modules ./node_modules
 RUN npx prisma generate
-RUN npm run build
-
-# Production image, copy all the files and run next
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV production
-COPY --from=builder /app .
 EXPOSE 3000
-CMD ["npm", "run", "start"] 
+CMD ["npm", "run", "dev"] 
