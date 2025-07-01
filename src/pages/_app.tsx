@@ -99,10 +99,15 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
                 color: "#fff",
                 borderRadius: "50%",
                 fontSize: 12,
-                padding: "2px 6px",
-                minWidth: 18,
+                width: 20,
+                height: 20,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 textAlign: "center",
                 fontWeight: "bold",
+                lineHeight: 1,
+                padding: 0,
               }}
             >
               {cart.reduce((sum, item) => sum + item.quantity, 0)}
