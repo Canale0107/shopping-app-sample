@@ -34,6 +34,7 @@ export default async function handler(
     }
     return res.status(200).json({ ok: true });
   } catch (e) {
-    return res.status(500).json({ error: "注文登録に失敗しました" });
+    console.error("注文登録エラー:", e);
+    return res.status(500).json({ error: "注文登録に失敗しました", details: e instanceof Error ? e.message : String(e) });
   }
 }
