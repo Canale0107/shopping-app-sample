@@ -133,7 +133,7 @@ export default function Profile({ member, orders }: any) {
         )}
         <h2>注文履歴</h2>
         <table
-          border="1"
+          border={1}
           cellPadding={8}
           style={{ width: "100%", borderCollapse: "collapse" }}
         >
