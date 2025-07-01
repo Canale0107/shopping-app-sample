@@ -12,7 +12,11 @@
 
 ---
 
-## セットアップ手順
+## 初期データの自動化
+
+このリポジトリでは、`public/images/products/` 配下の画像と DB の商品データが必ず一致するようになっています。
+
+### 初期データの再現手順
 
 1. 依存パッケージのインストール
    ```sh
@@ -26,7 +30,7 @@
    ```sh
    npx prisma migrate reset --force
    ```
-4. ダミーデータ投入
+4. 商品画像と DB を一致させるシード投入
    ```sh
    npx ts-node prisma/seed.ts
    ```
@@ -35,6 +39,8 @@
    npm run dev
    ```
 6. ブラウザで [http://localhost:3000](http://localhost:3000) にアクセス
+
+> `npx ts-node prisma/seed.ts` を実行することで、`public/images/products/` 配下の全画像に対応した商品データが DB に投入されます。
 
 ---
 
