@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Link from "next/link";
+import { LoginForm } from "../login";
 
 export default function CartConfirmPage() {
   const { cart, clearCart } = useCart();
@@ -10,6 +11,7 @@ export default function CartConfirmPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -102,20 +104,20 @@ export default function CartConfirmPage() {
       </div>
       {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
       {status === "loading" ? null : !session ? (
-        <div style={{ margin: "24px 0", textAlign: "center" }}>
-          <p>注文にはログインが必要です。</p>
-          <Link href="/login">
-            <span
-              style={{
-                color: "#0070f3",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-            >
-              ログイン画面へ
-            </span>
-          </Link>
-        </div>
+        <button
+          onClick={() => setShowLoginModal(true)}
+          style={{
+            background: "#0070f3",
+            color: "#fff",
+            border: "none",
+            borderRadius: 4,
+            padding: "10px 32px",
+            fontSize: 16,
+            cursor: "pointer",
+          }}
+        >
+          ログインして注文する
+        </button>
       ) : (
         <button
           onClick={handleOrder}
@@ -132,6 +134,57 @@ export default function CartConfirmPage() {
         >
           {loading ? "注文中..." : "注文を確定する"}
         </button>
+      )}
+      {showLoginModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.3)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: 32,
+              borderRadius: 8,
+              minWidth: 350,
+              position: "relative",
+            }}
+          >
+            <button
+              onClick={() => setShowLoginModal(false)}
+              style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                fontSize: 18,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
+              aria-label="閉じる"
+            >
+              ×
+            </button>
+            <LoginForm onSuccess={() => setShowLoginModal(false)} />
+            <div style={{ marginTop: 16, textAlign: "center" }}>
+              <Link
+                href="/register"
+                style={{ textDecoration: "underline", color: "#0070f3" }}
+              >
+                新規登録はこちら
+              </Link>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
