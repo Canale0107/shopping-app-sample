@@ -198,7 +198,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     include: { product: { select: { name: true } } },
     orderBy: { orderdate: "desc" },
   });
-  const ordersSerialized = orders.map((order) => ({
+  const ordersSerialized = orders.map((order: any) => ({
     ...order,
     orderdate: order.orderdate.toISOString(),
   }));
