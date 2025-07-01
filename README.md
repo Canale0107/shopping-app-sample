@@ -67,7 +67,28 @@ Docker 環境でデータを再投入したい場合は、以下のコマンド�
 ```sh
 # コンテナ内でマイグレーションとシードを実行
 docker compose exec app npx prisma migrate reset --force
-docker compose exec app npx ts-node prisma/seed.ts
+docker compose exec app npx tsx prisma/seed.ts
+```
+
+### データベースの問題が発生した場合
+
+Category テーブルが見つからないエラーなどが発生した場合は、以下の手順で完全にリセットしてください：
+
+```sh
+# 1. コンテナを停止
+docker compose down
+
+# 2. コンテナを再起動
+docker compose up -d
+
+# 3. データベースが起動するまで少し待ってからマイグレーション実行
+sleep 10 && docker compose exec app npx prisma migrate reset --force
+
+# 4. シードデータを投入
+docker compose exec app npx tsx prisma/seed.ts
+
+# 5. アプリケーションを再起動
+docker compose restart app
 ```
 
 ---
@@ -102,8 +123,9 @@ docker compose exec app npx ts-node prisma/seed.ts
 
 - Prisma Studio で DB を GUI 管理：
   ```sh
-  docker compose exec app npx prisma studio
+  docker compose exec app npx prisma studio --port 5555
   ```
+  ブラウザで http://localhost:5555 にアクセス
 - スキーマ変更時：
   ```sh
   docker compose exec app npx prisma migrate dev --name <migration名>
@@ -111,8 +133,39 @@ docker compose exec app npx ts-node prisma/seed.ts
   ```
 - ダミーデータ再投入：
   ```sh
-  docker compose exec app npx ts-node prisma/seed.ts
+  docker compose exec app npx tsx prisma/seed.ts
   ```
+
+---
+
+## トラブルシューティング
+
+### Category テーブルが見つからないエラー
+
+```
+The table 'public.Category' does not exist in the current database.
+```
+
+このエラーが発生した場合は、データベースのマイグレーションが正しく適用されていない可能性があります。上記の「データベースの問題が発生した場合」の手順を実行してください。
+
+### 注文 API で 500 エラーが発生する
+
+注文処理でエラーが発生する場合は、以下を確認してください：
+
+1. データベースのテーブルが正しく作成されているか
+2. シードデータが正常に投入されているか
+3. ユーザーがログインしているか
+
+### アプリケーションが起動しない
+
+1. Docker Compose のログを確認：
+   ```sh
+   docker compose logs app
+   ```
+2. データベースの接続を確認：
+   ```sh
+   docker compose exec app npx prisma migrate status
+   ```
 
 ---
 
@@ -122,5 +175,6 @@ docker compose exec app npx ts-node prisma/seed.ts
 
 1. プロジェクトルートで以下のコマンドを実行してください。
    ```sh
-   docker compose exec app npx prisma studio
+   docker compose exec app npx prisma studio --port 5555
    ```
+2. ブラウザで http://localhost:5555 にアクセス
