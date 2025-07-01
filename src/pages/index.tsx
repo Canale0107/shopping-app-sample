@@ -1,6 +1,7 @@
 import { GetServerSideProps } from "next";
 import { prisma } from "../lib/prisma";
 import Link from "next/link";
+import { useCart } from "../lib/CartContext";
 
 export default function Home({
   categories,
@@ -9,6 +10,7 @@ export default function Home({
 }: any) {
   // カテゴリ選択時は商品一覧を表示
   if (selectedCategoryId) {
+    const { addToCart } = useCart();
     const selectedCategory = categories.find(
       (cat: any) => cat.id === selectedCategoryId
     );
@@ -53,6 +55,28 @@ export default function Home({
                 )}
                 <div>{p.name}</div>
                 <div style={{ fontWeight: "bold" }}>{p.price}円</div>
+                <button
+                  style={{
+                    marginTop: 8,
+                    width: "100%",
+                    background: "#0070f3",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 4,
+                    padding: "6px 0",
+                    cursor: "pointer",
+                  }}
+                  onClick={() =>
+                    addToCart({
+                      id: p.id,
+                      name: p.name,
+                      price: p.price,
+                      imageUrl: p.imageUrl,
+                    })
+                  }
+                >
+                  カートに追加
+                </button>
               </div>
             ))
           )}
