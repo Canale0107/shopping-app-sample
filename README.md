@@ -1,5 +1,52 @@
 # ショッピングサイト サンプル（Next.js + Prisma + PostgreSQL）
 
+## 前提条件
+
+- Node.js v18 以上
+- npm v9 以上
+- Docker & Docker Compose（PostgreSQL をローカルで用意する場合は不要）
+- git
+
+## セットアップ手順（初回）
+
+1. リポジトリをクローン
+   ```sh
+   git clone <このリポジトリのURL>
+   cd shopping
+   ```
+2. `.env`ファイルの作成
+   - `.envsample` をコピーして `.env` を作成し、必要に応じて編集してください。
+   ```sh
+   cp .envsample .env
+   ```
+   - `DATABASE_URL`：PostgreSQL の接続情報を自分の環境に合わせて設定
+   - `NEXTAUTH_SECRET`：本番運用時は `openssl rand -base64 32` などで生成した 32 文字以上のランダムな値を推奨
+3. 依存パッケージのインストール
+   ```sh
+   npm install
+   ```
+4. Prisma Client の生成
+   ```sh
+   npx prisma generate
+   ```
+5. DB マイグレーション＆リセット（開発用）
+   ```sh
+   npx prisma migrate reset --force
+   ```
+6. 商品画像と DB を一致させるシード投入
+   ```sh
+   npx ts-node prisma/seed.ts
+   ```
+7. 開発サーバー起動
+   ```sh
+   npm run dev
+   ```
+8. ブラウザで [http://localhost:3000](http://localhost:3000) にアクセス
+
+> `npx ts-node prisma/seed.ts` を実行することで、`public/images/products/` 配下の全画像に対応した商品データが DB に投入されます。
+
+---
+
 ## 概要
 
 このプロジェクトは、Next.js（TypeScript）・Prisma・PostgreSQL・NextAuth.js を使ったモダンなショッピングサイトのサンプルです。
@@ -96,4 +143,3 @@
    ```sh
    npx prisma studio
    ```
-2. ブラウザが自動で開き、Member テーブル（会員情報）が一覧で確認できます。
