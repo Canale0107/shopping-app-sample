@@ -2,18 +2,18 @@
 
 ## 前提条件
 
-- Node.js v18 以上
-- npm v9 以上
-- Docker & Docker Compose（PostgreSQL をローカルで用意する場合は不要）
+- Docker & Docker Compose
 - git
 
 ## セットアップ手順（初回）
 
 1. リポジトリをクローン
+
    ```sh
    git clone <このリポジトリのURL>
    cd shopping
    ```
+
 2. `.env`ファイルの作成
 
    - `.envsample` をコピーして `.env` を作成し、必要に応じて編集してください。
@@ -25,41 +25,22 @@
    - `DATABASE_URL`：PostgreSQL の接続情報を自分の環境に合わせて設定
    - `NEXTAUTH_SECRET`：本番運用時は `openssl rand -base64 32` などで生成した 32 文字以上のランダムな値を推奨
 
-3. Docker Compose で DB を起動
+3. Docker Compose で起動
 
    ```sh
    docker compose up -d
    ```
 
-4. 依存パッケージのインストール
+   - このコマンドで PostgreSQL と Next.js アプリケーションが同時に起動します
+   - 初回起動時は自動でマイグレーションとシードデータの投入が実行されます
 
-   ```sh
-   npm install
-   ```
+4. ブラウザで [http://localhost:3000](http://localhost:3000) にアクセス
 
-5. DB マイグレーション＆リセット（開発用）
-
-   ```sh
-   npx prisma migrate reset --force
-   ```
-
-6. 商品画像と DB を一致させるシード投入
-
-   ```sh
-   npx ts-node prisma/seed.ts
-   ```
-
-7. 開発サーバー起動
-
-   ```sh
-   npm run dev
-   ```
-
-8. ブラウザで [http://localhost:3000](http://localhost:3000) にアクセス
-
-> `npx ts-node prisma/seed.ts` を実行することで、`public/images/products/` 配下の全画像に対応した商品データが DB に投入されます。
+> **注意**: このプロジェクトは Docker Compose での運用を前提としています。
 >
-> **注意**: このプロジェクトは Docker Compose での運用を前提としています。Prisma Client の生成は Docker ビルド時に自動で実行されます。
+> - Prisma Client の生成は Docker ビルド時に自動で実行されます
+> - データベースのマイグレーションとシード投入も初回起動時に自動実行されます
+> - アプリケーションは `npm run dev` で起動し、ホットリロードに対応しています
 
 ---
 
@@ -79,31 +60,15 @@
 
 このリポジトリでは、`public/images/products/` 配下の画像と DB の商品データが必ず一致するようになっています。
 
-### 初期データの再現手順
+### データの再投入が必要な場合
 
-1. 依存パッケージのインストール
-   ```sh
-   npm install
-   ```
-2. Prisma Client の生成
-   ```sh
-   npx prisma generate
-   ```
-3. DB マイグレーション＆リセット（開発用）
-   ```sh
-   npx prisma migrate reset --force
-   ```
-4. 商品画像と DB を一致させるシード投入
-   ```sh
-   npx ts-node prisma/seed.ts
-   ```
-5. 開発サーバー起動
-   ```sh
-   npm run dev
-   ```
-6. ブラウザで [http://localhost:3000](http://localhost:3000) にアクセス
+Docker 環境でデータを再投入したい場合は、以下のコマンドを実行してください：
 
-> `npx ts-node prisma/seed.ts` を実行することで、`public/images/products/` 配下の全画像に対応した商品データが DB に投入されます。
+```sh
+# コンテナ内でマイグレーションとシードを実行
+docker compose exec app npx prisma migrate reset --force
+docker compose exec app npx ts-node prisma/seed.ts
+```
 
 ---
 
@@ -137,16 +102,16 @@
 
 - Prisma Studio で DB を GUI 管理：
   ```sh
-  npx prisma studio
+  docker compose exec app npx prisma studio
   ```
 - スキーマ変更時：
   ```sh
-  npx prisma migrate dev --name <migration名>
-  npx prisma generate
+  docker compose exec app npx prisma migrate dev --name <migration名>
+  docker compose exec app npx prisma generate
   ```
 - ダミーデータ再投入：
   ```sh
-  npx ts-node prisma/seed.ts
+  docker compose exec app npx ts-node prisma/seed.ts
   ```
 
 ---
@@ -157,5 +122,5 @@
 
 1. プロジェクトルートで以下のコマンドを実行してください。
    ```sh
-   npx prisma studio
+   docker compose exec app npx prisma studio
    ```
