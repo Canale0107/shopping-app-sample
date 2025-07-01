@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import { prisma } from "../lib/prisma";
 import Link from "next/link";
 import { useCart } from "../lib/CartContext";
+import { useRouter } from "next/router";
 
 export default function Home({
   categories,
@@ -11,6 +12,7 @@ export default function Home({
   // カテゴリ選択時は商品一覧を表示
   if (selectedCategoryId) {
     const { addToCart } = useCart();
+    const router = useRouter();
     const selectedCategory = categories.find(
       (cat: any) => cat.id === selectedCategoryId
     );
@@ -20,10 +22,7 @@ export default function Home({
     return (
       <div>
         <h1>{selectedCategory?.name}の商品一覧</h1>
-        <button
-          onClick={() => (window.location.href = "/")}
-          style={{ marginBottom: 16 }}
-        >
+        <button onClick={() => router.push("/")} style={{ marginBottom: 16 }}>
           カテゴリ一覧に戻る
         </button>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>

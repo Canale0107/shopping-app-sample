@@ -78,8 +78,7 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
         </span>
         {status === "loading" ? null : session ? (
           <>
-            <a
-              href="/profile"
+            <span
               onClick={handleProfileClick}
               style={{
                 marginRight: 16,
@@ -89,7 +88,7 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
               }}
             >
               会員情報
-            </a>
+            </span>
             <span style={{ marginRight: 16 }}>
               ようこそ、{session.user?.name || session.user?.email} さん
             </span>
