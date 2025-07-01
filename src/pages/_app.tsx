@@ -6,6 +6,7 @@ import { LoginForm } from "./login";
 import { useRouter } from "next/router";
 import { CartProvider, useCart } from "../lib/CartContext";
 import "../styles/global.css";
+import { Modal } from "../components/Modal";
 
 function Header({ onLoginClick }: { onLoginClick: () => void }) {
   const { data: session, status } = useSession();
@@ -205,48 +206,33 @@ export default function App({
       <CartProvider>
         <Header onLoginClick={() => setShowLoginModal(true)} />
         {showLoginModal && (
-          <div
-            className="modal-backdrop"
-            onClick={() => setShowLoginModal(false)}
-          >
-            <div
-              className="modal-content"
+          <Modal onClose={() => setShowLoginModal(false)}>
+            <button
+              onClick={() => setShowLoginModal(false)}
               style={{
-                background: "#fff",
-                padding: 32,
-                borderRadius: 8,
-                minWidth: 350,
-                position: "relative",
+                position: "absolute",
+                top: 8,
+                right: 8,
+                fontSize: 18,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
               }}
-              onClick={(e) => e.stopPropagation()}
+              aria-label="閉じる"
             >
-              <button
+              ×
+            </button>
+            <LoginForm onSuccess={() => setShowLoginModal(false)} />
+            <div style={{ marginTop: 16, textAlign: "center" }}>
+              <Link
+                href="/register"
+                style={{ textDecoration: "underline", color: "#0070f3" }}
                 onClick={() => setShowLoginModal(false)}
-                style={{
-                  position: "absolute",
-                  top: 8,
-                  right: 8,
-                  fontSize: 18,
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-                aria-label="閉じる"
               >
-                ×
-              </button>
-              <LoginForm onSuccess={() => setShowLoginModal(false)} />
-              <div style={{ marginTop: 16, textAlign: "center" }}>
-                <Link
-                  href="/register"
-                  style={{ textDecoration: "underline", color: "#0070f3" }}
-                  onClick={() => setShowLoginModal(false)}
-                >
-                  新規登録はこちら
-                </Link>
-              </div>
+                新規登録はこちら
+              </Link>
             </div>
-          </div>
+          </Modal>
         )}
         <Component {...pageProps} />
       </CartProvider>
