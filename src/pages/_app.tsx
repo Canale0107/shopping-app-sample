@@ -57,7 +57,17 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
             </button>
           </>
         ) : (
-          <button onClick={onLoginClick}>ログイン</button>
+          <>
+            <button onClick={onLoginClick} style={{ marginRight: 12 }}>
+              ログイン
+            </button>
+            <Link
+              href="/register"
+              style={{ textDecoration: "underline", color: "#0070f3" }}
+            >
+              新規登録
+            </Link>
+          </>
         )}
       </nav>
     </header>
@@ -112,6 +122,14 @@ export default function App({
               ×
             </button>
             <LoginForm onSuccess={() => setShowLoginModal(false)} />
+            <div style={{ marginTop: 16, textAlign: "center" }}>
+              <Link
+                href="/register"
+                style={{ textDecoration: "underline", color: "#0070f3" }}
+              >
+                新規登録はこちら
+              </Link>
+            </div>
           </div>
         </div>
       )}

@@ -1,31 +1,103 @@
 import { getSession, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { prisma } from "../lib/prisma";
+import { useState } from "react";
 
 export default function Profile({ member, orders }: any) {
   const { data: session, status } = useSession();
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(member.membername);
+  const [address, setAddress] = useState(member.address);
+  const [phone, setPhone] = useState(member.phone);
+  const [saveError, setSaveError] = useState("");
+  const [saveSuccess, setSaveSuccess] = useState("");
   if (status === "loading") return null;
   if (!session) return null;
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaveError("");
+    setSaveSuccess("");
+    // API実装後にPUTリクエストを送る
+    const res = await fetch("/api/member", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, address, phone }),
+    });
+    if (res.ok) {
+      setSaveSuccess("会員情報を更新しました");
+      setEditing(false);
+    } else {
+      const data = await res.json();
+      setSaveError(data.error || "更新に失敗しました");
+    }
+  };
   return (
     <div style={{ maxWidth: 800, margin: "2rem auto" }}>
       <h1>会員情報</h1>
-      <ul>
-        <li>
-          <strong>現在のポイント:</strong> {member.memberpoint}
-        </li>
-        <li>
-          <strong>会員ID:</strong> {member.memberid}
-        </li>
-        <li>
-          <strong>名前:</strong> {member.membername}
-        </li>
-        <li>
-          <strong>住所:</strong> {member.address}
-        </li>
-        <li>
-          <strong>電話番号:</strong> {member.phone}
-        </li>
-      </ul>
+      {editing ? (
+        <form onSubmit={handleSave} style={{ marginBottom: 24 }}>
+          <div>
+            <label>名前</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>住所</label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label>電話番号</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+          </div>
+          {saveError && <p style={{ color: "red" }}>{saveError}</p>}
+          {saveSuccess && <p style={{ color: "green" }}>{saveSuccess}</p>}
+          <button type="submit">保存</button>
+          <button
+            type="button"
+            onClick={() => setEditing(false)}
+            style={{ marginLeft: 12 }}
+          >
+            キャンセル
+          </button>
+        </form>
+      ) : (
+        <>
+          <ul>
+            <li>
+              <strong>現在のポイント:</strong> {member.memberpoint}
+            </li>
+            <li>
+              <strong>会員ID:</strong> {member.memberid}
+            </li>
+            <li>
+              <strong>名前:</strong> {name}
+            </li>
+            <li>
+              <strong>住所:</strong> {address}
+            </li>
+            <li>
+              <strong>電話番号:</strong> {phone}
+            </li>
+          </ul>
+          <button onClick={() => setEditing(true)} style={{ marginBottom: 24 }}>
+            編集
+          </button>
+        </>
+      )}
       <h2>注文履歴</h2>
       <table
         border="1"
