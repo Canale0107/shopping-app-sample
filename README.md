@@ -25,38 +25,41 @@
    - `DATABASE_URL`：PostgreSQL の接続情報を自分の環境に合わせて設定
    - `NEXTAUTH_SECRET`：本番運用時は `openssl rand -base64 32` などで生成した 32 文字以上のランダムな値を推奨
 
-3. Docker Compose で DB を起動（必要な場合のみ）
+3. Docker Compose で DB を起動
 
    ```sh
    docker compose up -d
    ```
 
-   - すでに PostgreSQL がローカルで起動している場合は不要です。
-   - 初回セットアップや DB を Docker で管理する場合は必ずこのコマンドを実行してください。
-
 4. 依存パッケージのインストール
+
    ```sh
    npm install
    ```
-5. Prisma Client の生成
-   ```sh
-   npx prisma generate
-   ```
-6. DB マイグレーション＆リセット（開発用）
+
+5. DB マイグレーション＆リセット（開発用）
+
    ```sh
    npx prisma migrate reset --force
    ```
-7. 商品画像と DB を一致させるシード投入
+
+6. 商品画像と DB を一致させるシード投入
+
    ```sh
    npx ts-node prisma/seed.ts
    ```
-8. 開発サーバー起動
+
+7. 開発サーバー起動
+
    ```sh
    npm run dev
    ```
-9. ブラウザで [http://localhost:3000](http://localhost:3000) にアクセス
+
+8. ブラウザで [http://localhost:3000](http://localhost:3000) にアクセス
 
 > `npx ts-node prisma/seed.ts` を実行することで、`public/images/products/` 配下の全画像に対応した商品データが DB に投入されます。
+>
+> **注意**: このプロジェクトは Docker Compose での運用を前提としています。Prisma Client の生成は Docker ビルド時に自動で実行されます。
 
 ---
 
