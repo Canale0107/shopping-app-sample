@@ -38,82 +38,146 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
       </Link>
       <nav style={{ display: "flex", alignItems: "center" }}>
         {status === "loading" ? null : session ? (
-          <>
-            <span
-              onClick={handleProfileClick}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
               style={{
-                marginRight: 16,
-                textDecoration: "underline",
-                color: "#0070f3",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-end",
+                marginRight: 24,
+              }}
+            >
+              <span style={{ fontWeight: "bold", marginBottom: 4 }}>
+                ようこそ、{session.user?.name || session.user?.email} さん
+              </span>
+              <div>
+                <span
+                  onClick={handleProfileClick}
+                  style={{
+                    marginRight: 16,
+                    textDecoration: "underline",
+                    color: "#0070f3",
+                    cursor: "pointer",
+                  }}
+                >
+                  会員情報
+                </span>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  style={{ marginRight: 0 }}
+                >
+                  ログアウト
+                </button>
+              </div>
+            </div>
+            <span
+              style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
+              onClick={() => router.push("/cart")}
+              aria-label="カート"
+            >
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#333"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.39H6" />
+              </svg>
+              {cart.length > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -4,
+                    right: -8,
+                    background: "#e00",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    fontSize: 12,
+                    width: 20,
+                    height: 20,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    lineHeight: 1,
+                    padding: 0,
+                  }}
+                >
+                  {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                </span>
+              )}
+            </span>
+          </div>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div>
+              <button onClick={onLoginClick} style={{ marginRight: 12 }}>
+                ログイン
+              </button>
+              <Link
+                href="/register"
+                style={{ textDecoration: "underline", color: "#0070f3" }}
+              >
+                新規登録
+              </Link>
+            </div>
+            <span
+              style={{
+                marginLeft: 24,
+                position: "relative",
                 cursor: "pointer",
               }}
+              onClick={() => router.push("/cart")}
+              aria-label="カート"
             >
-              会員情報
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#333"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.39H6" />
+              </svg>
+              {cart.length > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -4,
+                    right: -8,
+                    background: "#e00",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    fontSize: 12,
+                    width: 20,
+                    height: 20,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    lineHeight: 1,
+                    padding: 0,
+                  }}
+                >
+                  {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                </span>
+              )}
             </span>
-            <span style={{ marginRight: 16 }}>
-              ようこそ、{session.user?.name || session.user?.email} さん
-            </span>
-            <button onClick={() => signOut({ callbackUrl: "/" })}>
-              ログアウト
-            </button>
-          </>
-        ) : (
-          <>
-            <button onClick={onLoginClick} style={{ marginRight: 12 }}>
-              ログイン
-            </button>
-            <Link
-              href="/register"
-              style={{ textDecoration: "underline", color: "#0070f3" }}
-            >
-              新規登録
-            </Link>
-          </>
+          </div>
         )}
-        <span
-          style={{ marginLeft: 24, position: "relative", cursor: "pointer" }}
-          onClick={() => router.push("/cart")}
-          aria-label="カート"
-        >
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#333"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="9" cy="21" r="1" />
-            <circle cx="20" cy="21" r="1" />
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.39H6" />
-          </svg>
-          {cart.length > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: -4,
-                right: -8,
-                background: "#e00",
-                color: "#fff",
-                borderRadius: "50%",
-                fontSize: 12,
-                width: 20,
-                height: 20,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                fontWeight: "bold",
-                lineHeight: 1,
-                padding: 0,
-              }}
-            >
-              {cart.reduce((sum, item) => sum + item.quantity, 0)}
-            </span>
-          )}
-        </span>
       </nav>
     </header>
   );
