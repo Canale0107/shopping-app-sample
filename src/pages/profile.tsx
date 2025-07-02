@@ -2,6 +2,8 @@ import { getSession, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { prisma } from "../lib/prisma";
 import { useState } from "react";
+import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { Modal } from "../components/Modal";
 
 export default function Profile({ member, orders }: any) {
   const { data: session, status } = useSession();
@@ -13,6 +15,8 @@ export default function Profile({ member, orders }: any) {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState("");
+  const [detailOrder, setDetailOrder] = useState<any | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   if (status === "loading") return null;
   if (!session) return null;
   const handleSave = async (e: React.FormEvent) => {
@@ -150,35 +154,101 @@ export default function Profile({ member, orders }: any) {
           <table className="table-modern">
             <thead>
               <tr>
+                <th></th>
                 <th>日付</th>
-                <th>商品名</th>
-                <th>価格</th>
-                <th>お買い上げ数量</th>
-                <th>金額</th>
-                <th>ポイント</th>
+                <th>商品数</th>
+                <th>合計金額</th>
+                <th>合計ポイント</th>
               </tr>
             </thead>
             <tbody>
               {orders.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={5}
                     style={{ textAlign: "center", color: "#888" }}
                   >
                     注文履歴はありません
                   </td>
                 </tr>
               ) : (
-                orders.map((order: any) => (
-                  <tr key={order.orderid}>
-                    <td>{order.orderdate.slice(0, 10)}</td>
-                    <td>{order.product.name}</td>
-                    <td>{order.price}</td>
-                    <td>{order.quantity}</td>
-                    <td>{order.price * order.quantity}</td>
-                    <td>{order.point * order.quantity}</td>
-                  </tr>
-                ))
+                orders.map((order: any, idx: number) => {
+                  const total = order.products.reduce(
+                    (sum: number, p: any) => sum + p.price * p.quantity,
+                    0
+                  );
+                  const totalPoint = order.products.reduce(
+                    (sum: number, p: any) => sum + p.point * p.quantity,
+                    0
+                  );
+                  const totalQty = order.products.reduce(
+                    (sum: number, p: any) => sum + p.quantity,
+                    0
+                  );
+                  const isOpen = openIndex === idx;
+                  return (
+                    <>
+                      <tr
+                        key={order.orderid + idx}
+                        style={{
+                          cursor: "pointer",
+                          background: isOpen ? "#f7faff" : undefined,
+                        }}
+                        onClick={() => setOpenIndex(isOpen ? null : idx)}
+                      >
+                        <td style={{ width: 32, textAlign: "center" }}>
+                          {isOpen ? <FiChevronDown /> : <FiChevronRight />}
+                        </td>
+                        <td>{order.orderdate.slice(0, 10)}</td>
+                        <td>{totalQty} 個</td>
+                        <td>{total} 円</td>
+                        <td>{totalPoint} pt</td>
+                      </tr>
+                      {isOpen && (
+                        <tr>
+                          <td colSpan={5} style={{ background: "#f7faff" }}>
+                            <table style={{ width: "100%", margin: "8px 0" }}>
+                              <thead>
+                                <tr>
+                                  <th>画像</th>
+                                  <th>商品名</th>
+                                  <th>価格</th>
+                                  <th>数量</th>
+                                  <th>小計</th>
+                                  <th>ポイント</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {order.products.map((p: any, i: number) => (
+                                  <tr key={i}>
+                                    <td>
+                                      {p.imageUrl && (
+                                        <img
+                                          src={p.imageUrl}
+                                          alt={p.name}
+                                          style={{
+                                            width: 48,
+                                            height: 48,
+                                            objectFit: "contain",
+                                          }}
+                                        />
+                                      )}
+                                    </td>
+                                    <td>{p.name}</td>
+                                    <td>{p.price} 円</td>
+                                    <td>{p.quantity} 個</td>
+                                    <td>{p.price * p.quantity} 円</td>
+                                    <td>{p.point * p.quantity} pt</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -208,14 +278,33 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       memberpoint: true,
     },
   });
-  const orders = await prisma.order.findMany({
+  const ordersRaw = await prisma.order.findMany({
     where: { memberid: session.user.email },
-    include: { product: { select: { name: true } } },
+    include: { product: { select: { name: true, imageUrl: true } } },
     orderBy: { orderdate: "desc" },
   });
-  const ordersSerialized = orders.map((order: any) => ({
-    ...order,
-    orderdate: order.orderdate.toISOString(),
-  }));
-  return { props: { member, orders: ordersSerialized } };
+  // 注文単位でグループ化
+  const grouped: any = {};
+  for (const o of ordersRaw) {
+    const key = `${o.orderdate.toISOString()}_${o.creditcardid}`; // 1注文の識別（orderdate+creditcardid）
+    if (!grouped[key]) {
+      grouped[key] = {
+        orderid: o.orderid,
+        orderdate: o.orderdate.toISOString(),
+        creditcardid: o.creditcardid,
+        products: [],
+      };
+    }
+    grouped[key].products.push({
+      name: o.product.name,
+      imageUrl: o.product.imageUrl,
+      price: o.price,
+      quantity: o.quantity,
+      point: o.point,
+    });
+  }
+  const orders = Object.values(grouped).sort((a: any, b: any) =>
+    b.orderdate.localeCompare(a.orderdate)
+  );
+  return { props: { member, orders } };
 };
