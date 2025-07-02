@@ -109,38 +109,67 @@ export default function CartConfirmPage() {
           合計: {total}円
         </div>
         {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
-        {status === "loading" ? null : !session ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: 16,
+            marginBottom: 24,
+          }}
+        >
           <button
-            onClick={() => setShowLoginModal(true)}
+            onClick={() => router.push("/cart")}
             style={{
-              background: "#0070f3",
-              color: "#fff",
-              border: "none",
-              borderRadius: 4,
-              padding: "10px 32px",
-              fontSize: 16,
+              background: "#fff",
+              color: "#2563eb",
+              borderRadius: 6,
+              border: "1px solid #2563eb",
+              padding: "8px 18px",
+              fontWeight: 500,
+              fontSize: "1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
               cursor: "pointer",
+              boxShadow: "0 1px 4px rgba(30,64,175,0.04)",
+              transition: "background 0.2s, color 0.2s",
             }}
           >
-            ログインして注文する
+            カートに戻る
           </button>
-        ) : (
-          <button
-            onClick={handleOrder}
-            disabled={loading}
-            style={{
-              background: "#0070f3",
-              color: "#fff",
-              border: "none",
-              borderRadius: 4,
-              padding: "10px 32px",
-              fontSize: 16,
-              cursor: "pointer",
-            }}
-          >
-            {loading ? "注文中..." : "注文を確定する"}
-          </button>
-        )}
+          {status === "loading" ? null : !session ? (
+            <button
+              onClick={() => setShowLoginModal(true)}
+              style={{
+                background: "#0070f3",
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                padding: "10px 32px",
+                fontSize: 16,
+                cursor: "pointer",
+              }}
+            >
+              ログインして注文する
+            </button>
+          ) : (
+            <button
+              onClick={handleOrder}
+              disabled={loading}
+              style={{
+                background: "#0070f3",
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                padding: "10px 32px",
+                fontSize: 16,
+                cursor: "pointer",
+              }}
+            >
+              {loading ? "注文中..." : "注文を確定する"}
+            </button>
+          )}
+        </div>
         {showLoginModal && (
           <Modal onClose={() => setShowLoginModal(false)}>
             <button
