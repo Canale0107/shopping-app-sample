@@ -31,19 +31,26 @@ model Product {
   price       Int
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
-  orders      Order[]
+  orderItems  OrderItem[]
   imageUrl    String?  // 画像パス
 }
 
 model Order {
-  orderid       String   @id @default(uuid())
+  id            String      @id @default(uuid())
   memberid      String
-  member        Member   @relation(fields: [memberid], references: [memberid])
+  member        Member      @relation(fields: [memberid], references: [memberid])
   orderdate     DateTime
   creditcardid  String
-  productid     String
-  product       Product  @relation(fields: [productid], references: [id])
-  quantity      Int
-  price         Int
-  point         Int
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  productid String
+  product   Product  @relation(fields: [productid], references: [id])
+  quantity  Int
+  price     Int
+  point     Int
 } 

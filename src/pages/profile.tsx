@@ -183,15 +183,15 @@ export default function Profile({ member, orders }: any) {
                 </tr>
               ) : (
                 orders.map((order: any, idx: number) => {
-                  const total = order.products.reduce(
+                  const total = order.items.reduce(
                     (sum: number, p: any) => sum + p.price * p.quantity,
                     0
                   );
-                  const totalPoint = order.products.reduce(
+                  const totalPoint = order.items.reduce(
                     (sum: number, p: any) => sum + p.point * p.quantity,
                     0
                   );
-                  const totalQty = order.products.reduce(
+                  const totalQty = order.items.reduce(
                     (sum: number, p: any) => sum + p.quantity,
                     0
                   );
@@ -229,7 +229,7 @@ export default function Profile({ member, orders }: any) {
                                 margin: "0 24px",
                               }}
                             >
-                              {order.products.map((p: any, i: number) => (
+                              {order.items.map((p: any, i: number) => (
                                 <div
                                   key={i}
                                   style={{
@@ -244,10 +244,10 @@ export default function Profile({ member, orders }: any) {
                                     marginBottom: 24,
                                   }}
                                 >
-                                  {p.imageUrl && (
+                                  {p.product.imageUrl && (
                                     <img
-                                      src={p.imageUrl}
-                                      alt={p.name}
+                                      src={p.product.imageUrl}
+                                      alt={p.product.name}
                                       style={{
                                         width: 56,
                                         height: 56,
@@ -265,7 +265,7 @@ export default function Profile({ member, orders }: any) {
                                         marginBottom: 4,
                                       }}
                                     >
-                                      {p.name}
+                                      {p.product.name}
                                     </div>
                                     <div
                                       style={{
@@ -335,33 +335,20 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       memberpoint: true,
     },
   });
-  const ordersRaw = await prisma.order.findMany({
+  const orders = await prisma.order.findMany({
     where: { memberid: session.user.email },
-    include: { product: { select: { name: true, imageUrl: true } } },
+    include: {
+      items: {
+        include: {
+          product: { select: { name: true, imageUrl: true } },
+        },
+      },
+    },
     orderBy: { orderdate: "desc" },
   });
-  // 注文単位でグループ化
-  const grouped: any = {};
-  for (const o of ordersRaw) {
-    const key = `${o.orderdate.toISOString()}_${o.creditcardid}`; // 1注文の識別（orderdate+creditcardid）
-    if (!grouped[key]) {
-      grouped[key] = {
-        orderid: o.orderid,
-        orderdate: o.orderdate.toISOString(),
-        creditcardid: o.creditcardid,
-        products: [],
-      };
-    }
-    grouped[key].products.push({
-      name: o.product.name,
-      imageUrl: o.product.imageUrl,
-      price: o.price,
-      quantity: o.quantity,
-      point: o.point,
-    });
-  }
-  const orders = Object.values(grouped).sort((a: any, b: any) =>
-    b.orderdate.localeCompare(a.orderdate)
-  );
-  return { props: { member, orders } };
+  const ordersSerialized = orders.map((order: any) => ({
+    ...order,
+    orderdate: order.orderdate.toISOString(),
+  }));
+  return { props: { member, orders: ordersSerialized } };
 };

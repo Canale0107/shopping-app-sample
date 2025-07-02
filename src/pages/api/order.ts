@@ -18,23 +18,30 @@ export default async function handler(
     return res.status(400).json({ error: "注文内容が不正です" });
   }
   try {
-    // 1件ずつOrderテーブルにinsert
-    for (const item of items) {
-      await prisma.order.create({
-        data: {
-          memberid,
-          orderdate: new Date(),
-          creditcardid: "dummy", // 本番ではカード情報を別管理
-          productid: item.id,
-          quantity: item.quantity,
-          price: item.price,
-          point: 0, // ポイント未対応
+    // 1回の注文でOrderを1件作成し、OrderItemを複数作成
+    const order = await prisma.order.create({
+      data: {
+        memberid,
+        orderdate: new Date(),
+        creditcardid: "dummy", // 本番ではカード情報を別管理
+        items: {
+          create: items.map((item: any) => ({
+            productid: item.id,
+            quantity: item.quantity,
+            price: item.price,
+            point: 0, // ポイント未対応
+          })),
         },
-      });
-    }
-    return res.status(200).json({ ok: true });
+      },
+    });
+    return res.status(200).json({ ok: true, orderId: order.id });
   } catch (e) {
     console.error("注文登録エラー:", e);
-    return res.status(500).json({ error: "注文登録に失敗しました", details: e instanceof Error ? e.message : String(e) });
+    return res
+      .status(500)
+      .json({
+        error: "注文登録に失敗しました",
+        details: e instanceof Error ? e.message : String(e),
+      });
   }
 }
