@@ -141,7 +141,7 @@ export default function CartPage() {
               <button
                 onClick={clearCart}
                 style={{
-                  background: "#eee",
+                  background: "#bbb",
                   border: "none",
                   borderRadius: 4,
                   padding: "8px 16px",
