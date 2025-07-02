@@ -46,6 +46,16 @@ export default function Profile({ member, orders }: any) {
       setSaveError(data.error || "更新に失敗しました");
     }
   };
+  // 日付＋時刻を表示する関数を追加
+  function formatDateTime(dt: string) {
+    const d = new Date(dt);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(2, "0");
+    const min = String(d.getMinutes()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+  }
   return (
     <div className="main-area">
       <div style={{ maxWidth: 800, margin: "2rem auto" }}>
@@ -199,50 +209,97 @@ export default function Profile({ member, orders }: any) {
                         <td style={{ width: 32, textAlign: "center" }}>
                           {isOpen ? <FiChevronDown /> : <FiChevronRight />}
                         </td>
-                        <td>{order.orderdate.slice(0, 10)}</td>
+                        <td>{formatDateTime(order.orderdate)}</td>
                         <td>{totalQty} 個</td>
                         <td>{total} 円</td>
                         <td>{totalPoint} pt</td>
                       </tr>
                       {isOpen && (
                         <tr>
-                          <td colSpan={5} style={{ background: "#f7faff" }}>
-                            <table style={{ width: "100%", margin: "8px 0" }}>
-                              <thead>
-                                <tr>
-                                  <th>画像</th>
-                                  <th>商品名</th>
-                                  <th>価格</th>
-                                  <th>数量</th>
-                                  <th>小計</th>
-                                  <th>ポイント</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {order.products.map((p: any, i: number) => (
-                                  <tr key={i}>
-                                    <td>
-                                      {p.imageUrl && (
-                                        <img
-                                          src={p.imageUrl}
-                                          alt={p.name}
-                                          style={{
-                                            width: 48,
-                                            height: 48,
-                                            objectFit: "contain",
-                                          }}
-                                        />
-                                      )}
-                                    </td>
-                                    <td>{p.name}</td>
-                                    <td>{p.price} 円</td>
-                                    <td>{p.quantity} 個</td>
-                                    <td>{p.price * p.quantity} 円</td>
-                                    <td>{p.point * p.quantity} pt</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                          <td
+                            colSpan={5}
+                            style={{ background: "#f7faff", padding: 0 }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: 24,
+                                padding: "16px 0",
+                                margin: "0 24px",
+                              }}
+                            >
+                              {order.products.map((p: any, i: number) => (
+                                <div
+                                  key={i}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 16,
+                                    background: "#fff",
+                                    borderRadius: 12,
+                                    boxShadow: "0 2px 8px rgba(30,64,175,0.08)",
+                                    padding: "12px 20px",
+                                    minWidth: 320,
+                                    marginBottom: 24,
+                                  }}
+                                >
+                                  {p.imageUrl && (
+                                    <img
+                                      src={p.imageUrl}
+                                      alt={p.name}
+                                      style={{
+                                        width: 56,
+                                        height: 56,
+                                        objectFit: "contain",
+                                        borderRadius: 8,
+                                        background: "#f7faff",
+                                      }}
+                                    />
+                                  )}
+                                  <div style={{ flex: 1 }}>
+                                    <div
+                                      style={{
+                                        fontWeight: 600,
+                                        fontSize: 16,
+                                        marginBottom: 4,
+                                      }}
+                                    >
+                                      {p.name}
+                                    </div>
+                                    <div
+                                      style={{
+                                        fontSize: 14,
+                                        color: "#2563eb",
+                                        marginBottom: 2,
+                                      }}
+                                    >
+                                      価格: {p.price} 円　数量: {p.quantity} 個
+                                    </div>
+                                    <div
+                                      style={{
+                                        fontSize: 14,
+                                        color: "#222",
+                                        marginBottom: 2,
+                                      }}
+                                    >
+                                      小計: {p.price * p.quantity} 円　ポイント:{" "}
+                                      {p.point * p.quantity} pt
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            <div
+                              style={{
+                                textAlign: "right",
+                                color: "#888",
+                                fontSize: 13,
+                                margin: "8px 8px 0 0",
+                              }}
+                            >
+                              注文日時: {formatDateTime(order.orderdate)}
+                            </div>
                           </td>
                         </tr>
                       )}
