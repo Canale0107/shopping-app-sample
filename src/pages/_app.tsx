@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import { CartProvider, useCart } from "../lib/CartContext";
 import "../styles/global.css";
 import { Modal } from "../components/Modal";
+import { FiUser, FiLogIn, FiLogOut, FiShoppingCart } from "react-icons/fi";
+import { HiOutlineUserCircle } from "react-icons/hi";
 
 function Header({ onLoginClick }: { onLoginClick: () => void }) {
   const { data: session, status } = useSession();
@@ -38,54 +40,43 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
           ショッピングサイト
         </span>
       </Link>
-      <nav style={{ display: "flex", alignItems: "center" }}>
+      <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
         {status === "loading" ? null : session ? (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ fontWeight: "bold", marginRight: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+            <span style={{ fontWeight: "bold", color: "#fff", marginRight: 4 }}>
               ようこそ、{session.user?.name || session.user?.email} さん
             </span>
             <span
               onClick={handleProfileClick}
               style={{
-                marginRight: 16,
-                textDecoration: "underline",
-                color: "#fff",
                 cursor: "pointer",
-                fontWeight: 500,
+                display: "flex",
+                alignItems: "center",
               }}
+              title="会員情報"
+              aria-label="会員情報"
             >
-              会員情報
+              <HiOutlineUserCircle size={28} />
             </span>
-            <button
+            <span
               onClick={() => signOut({ callbackUrl: "/" })}
               style={{
-                marginRight: 24,
-                background: "#fff",
-                color: "#2563eb",
-                fontWeight: 500,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
               }}
+              title="ログアウト"
+              aria-label="ログアウト"
             >
-              ログアウト
-            </button>
+              <FiLogOut size={28} />
+            </span>
             <span
               style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
               onClick={() => router.push("/cart")}
               aria-label="カート"
+              title="カート"
             >
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="9" cy="21" r="1" />
-                <circle cx="20" cy="21" r="1" />
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.39H6" />
-              </svg>
+              <FiShoppingCart size={28} />
               {cart.length > 0 && (
                 <span
                   style={{
@@ -113,57 +104,48 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
             </span>
           </div>
         ) : (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div>
-              <button onClick={onLoginClick} style={{ marginRight: 12 }}>
-                ログイン
-              </button>
-              <Link href="/register" legacyBehavior>
-                <a
-                  className="register-btn"
-                  style={{
-                    background: "#fff",
-                    color: "#2563eb",
-                    borderRadius: 6,
-                    padding: "8px 18px",
-                    fontWeight: 500,
-                    fontSize: "1rem",
-                    marginLeft: 8,
-                    textDecoration: "none",
-                    border: "none",
-                    display: "inline-block",
-                    transition: "background 0.2s, color 0.2s",
-                    boxShadow: "0 1px 4px rgba(30,64,175,0.04)",
-                    cursor: "pointer",
-                  }}
-                >
-                  新規登録
-                </a>
-              </Link>
-            </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
             <span
+              onClick={onLoginClick}
               style={{
-                marginLeft: 24,
-                position: "relative",
                 cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
               }}
+              title="ログイン"
+              aria-label="ログイン"
+            >
+              <FiLogIn size={28} />
+            </span>
+            <Link href="/register" legacyBehavior>
+              <a
+                className="register-btn"
+                style={{
+                  background: "#fff",
+                  color: "#2563eb",
+                  borderRadius: 6,
+                  padding: "8px 18px",
+                  fontWeight: 500,
+                  fontSize: "1rem",
+                  marginLeft: 8,
+                  textDecoration: "none",
+                  border: "none",
+                  display: "inline-block",
+                  transition: "background 0.2s, color 0.2s",
+                  boxShadow: "0 1px 4px rgba(30,64,175,0.04)",
+                  cursor: "pointer",
+                }}
+              >
+                新規登録
+              </a>
+            </Link>
+            <span
+              style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
               onClick={() => router.push("/cart")}
               aria-label="カート"
+              title="カート"
             >
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#fff"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="9" cy="21" r="1" />
-                <circle cx="20" cy="21" r="1" />
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.39H6" />
-              </svg>
+              <FiShoppingCart size={28} />
               {cart.length > 0 && (
                 <span
                   style={{
