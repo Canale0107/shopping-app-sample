@@ -151,7 +151,6 @@ export default function Profile({ member, orders }: any) {
             <thead>
               <tr>
                 <th>日付</th>
-                <th>商品ID</th>
                 <th>商品名</th>
                 <th>価格</th>
                 <th>お買い上げ数量</th>
@@ -163,7 +162,7 @@ export default function Profile({ member, orders }: any) {
               {orders.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={6}
                     style={{ textAlign: "center", color: "#888" }}
                   >
                     注文履歴はありません
@@ -173,7 +172,6 @@ export default function Profile({ member, orders }: any) {
                 orders.map((order: any) => (
                   <tr key={order.orderid}>
                     <td>{order.orderdate.slice(0, 10)}</td>
-                    <td>{order.productid}</td>
                     <td>{order.product.name}</td>
                     <td>{order.price}</td>
                     <td>{order.quantity}</td>
