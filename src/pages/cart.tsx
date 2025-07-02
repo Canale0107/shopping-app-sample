@@ -1,6 +1,7 @@
 import { useCart } from "../lib/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { FiX } from "react-icons/fi";
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -37,18 +38,46 @@ export default function CartPage() {
             >
               <thead>
                 <tr style={{ borderBottom: "1px solid #ccc" }}>
+                  <th style={{ width: 48 }}></th>
                   <th style={{ textAlign: "left" }}>商品</th>
                   <th>価格</th>
                   <th>数量</th>
                   <th>小計</th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {cart.map((item) => (
-                  <tr key={item.id} style={{ borderBottom: "1px solid #eee" }}>
+                  <tr
+                    key={item.id}
+                    style={{ borderBottom: "1px solid #eee", height: 80 }}
+                  >
                     <td
-                      style={{ display: "flex", alignItems: "center", gap: 8 }}
+                      style={{ verticalAlign: "middle", textAlign: "center" }}
+                    >
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: 0,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        aria-label="カートから削除"
+                      >
+                        <FiX size={32} color="#888" />
+                      </button>
+                    </td>
+                    <td
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        verticalAlign: "middle",
+                        height: 80,
+                      }}
                     >
                       {item.imageUrl && (
                         <img
@@ -58,13 +87,20 @@ export default function CartPage() {
                             width: 48,
                             height: 48,
                             objectFit: "contain",
+                            display: "block",
                           }}
                         />
                       )}
-                      {item.name}
+                      <span style={{ alignSelf: "center" }}>{item.name}</span>
                     </td>
-                    <td>{item.price}円</td>
-                    <td>
+                    <td
+                      style={{ verticalAlign: "middle", textAlign: "center" }}
+                    >
+                      {item.price}円
+                    </td>
+                    <td
+                      style={{ verticalAlign: "middle", textAlign: "center" }}
+                    >
                       <input
                         type="number"
                         min={1}
@@ -72,22 +108,20 @@ export default function CartPage() {
                         onChange={(e) =>
                           updateQuantity(item.id, Number(e.target.value))
                         }
-                        style={{ width: 48 }}
+                        style={{
+                          width: 80,
+                          textAlign: "center",
+                          height: 36,
+                          fontSize: 16,
+                          verticalAlign: "middle",
+                          margin: 0,
+                        }}
                       />
                     </td>
-                    <td>{item.price * item.quantity}円</td>
-                    <td>
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        style={{
-                          color: "#e00",
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                      >
-                        削除
-                      </button>
+                    <td
+                      style={{ verticalAlign: "middle", textAlign: "center" }}
+                    >
+                      {item.price * item.quantity}円
                     </td>
                   </tr>
                 ))}

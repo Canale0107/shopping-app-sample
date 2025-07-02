@@ -80,20 +80,48 @@ export default function CartConfirmPage() {
           </thead>
           <tbody>
             {cart.map((item) => (
-              <tr key={item.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <tr
+                key={item.id}
+                style={{ borderBottom: "1px solid #eee", height: 72 }}
+              >
+                <td
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    verticalAlign: "middle",
+                    height: 72,
+                  }}
+                >
                   {item.imageUrl && (
                     <img
                       src={item.imageUrl}
                       alt={item.name}
-                      style={{ width: 40, height: 40, objectFit: "contain" }}
+                      style={{
+                        width: 48,
+                        height: 48,
+                        objectFit: "contain",
+                        display: "block",
+                      }}
                     />
                   )}
-                  {item.name}
+                  <span style={{ alignSelf: "center" }}>{item.name}</span>
                 </td>
-                <td>{item.price}円</td>
-                <td>{item.quantity}</td>
-                <td>{item.price * item.quantity}円</td>
+                <td style={{ verticalAlign: "middle", textAlign: "center" }}>
+                  {item.price}円
+                </td>
+                <td
+                  style={{
+                    verticalAlign: "middle",
+                    textAlign: "center",
+                    fontSize: 16,
+                  }}
+                >
+                  {item.quantity}
+                </td>
+                <td style={{ verticalAlign: "middle", textAlign: "center" }}>
+                  {item.price * item.quantity}円
+                </td>
               </tr>
             ))}
           </tbody>
