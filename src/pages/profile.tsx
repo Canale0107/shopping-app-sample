@@ -131,7 +131,7 @@ export default function Profile({ member, orders }: any) {
               <div style={{ minWidth: 260, flex: 1 }}>
                 <div className="mb-16">
                   <span className="label">現在のポイント</span>
-                  <div className="profile-point">{member.memberpoint} pt</div>
+                  <div className="profile-point">{member.memberpoint.toLocaleString()} pt</div>
                 </div>
                 <div className="mb-16">
                   <span className="label">会員ID</span>
@@ -210,9 +210,9 @@ export default function Profile({ member, orders }: any) {
                           {isOpen ? <FiChevronDown /> : <FiChevronRight />}
                         </td>
                         <td>{formatDateTime(order.orderdate)}</td>
-                        <td>{totalQty} 個</td>
-                        <td>{total} 円</td>
-                        <td>{totalPoint} pt</td>
+                        <td>{totalQty.toLocaleString()} 個</td>
+                        <td>{total.toLocaleString()} 円</td>
+                        <td>{totalPoint.toLocaleString()} pt</td>
                       </tr>
                       {isOpen && (
                         <tr>
@@ -274,7 +274,7 @@ export default function Profile({ member, orders }: any) {
                                         marginBottom: 2,
                                       }}
                                     >
-                                      価格: {p.price} 円　数量: {p.quantity} 個
+                                      価格: {p.price.toLocaleString()} 円　数量: {p.quantity.toLocaleString()} 個
                                     </div>
                                     <div
                                       style={{
@@ -283,8 +283,7 @@ export default function Profile({ member, orders }: any) {
                                         marginBottom: 2,
                                       }}
                                     >
-                                      小計: {p.price * p.quantity} 円　ポイント:{" "}
-                                      {p.point * p.quantity} pt
+                                      小計: {(p.price * p.quantity).toLocaleString()} 円　ポイント: {(p.point * p.quantity).toLocaleString()} pt
                                     </div>
                                   </div>
                                 </div>
