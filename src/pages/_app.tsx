@@ -43,20 +43,19 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
       <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
         {status === "loading" ? null : session ? (
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <span style={{ fontWeight: "bold", color: "#fff", marginRight: 4 }}>
-              ようこそ、{session.user?.name || session.user?.email} さん
-            </span>
             <span
-              onClick={handleProfileClick}
               style={{
+                fontWeight: "bold",
+                color: "#fff",
+                marginRight: 4,
                 cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
+                textDecoration: "underline",
               }}
+              onClick={() => router.push("/profile")}
               title="会員情報"
               aria-label="会員情報"
             >
-              <HiOutlineUserCircle size={28} />
+              ようこそ、{session.user?.name || session.user?.email} さん
             </span>
             <span
               onClick={() => signOut({ callbackUrl: "/" })}
