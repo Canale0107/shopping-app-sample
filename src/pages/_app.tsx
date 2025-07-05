@@ -15,9 +15,11 @@ import { CartSidebar } from "../components/CartSidebar";
 function Header({
   onLoginClick,
   onCartToggle,
+  isCartPage,
 }: {
   onLoginClick: () => void;
   onCartToggle: () => void;
+  isCartPage: boolean;
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -86,42 +88,48 @@ function Header({
             >
               <FiLogOut size={28} />
             </motion.span>
-            <motion.span
-              style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
-              onClick={onCartToggle}
-              aria-label="カート"
-              title="カート"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <FiShoppingCart size={28} />
-              {cart.length > 0 && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  style={{
-                    position: "absolute",
-                    top: -4,
-                    right: -8,
-                    background: "#e00",
-                    color: "#fff",
-                    borderRadius: "50%",
-                    fontSize: 12,
-                    width: 20,
-                    height: 20,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    lineHeight: 1,
-                    padding: 0,
-                  }}
-                >
-                  {cart.reduce((sum, item) => sum + item.quantity, 0)}
-                </motion.span>
-              )}
-            </motion.span>
+            {!isCartPage && (
+              <motion.span
+                style={{
+                  marginLeft: 0,
+                  position: "relative",
+                  cursor: "pointer",
+                }}
+                onClick={onCartToggle}
+                aria-label="カート"
+                title="カート"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FiShoppingCart size={28} />
+                {cart.length > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    style={{
+                      position: "absolute",
+                      top: -4,
+                      right: -8,
+                      background: "#e00",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      fontSize: 12,
+                      width: 20,
+                      height: 20,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      lineHeight: 1,
+                      padding: 0,
+                    }}
+                  >
+                    {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                  </motion.span>
+                )}
+              </motion.span>
+            )}
           </div>
         ) : (
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
@@ -163,42 +171,48 @@ function Header({
                 新規登録
               </motion.a>
             </Link>
-            <motion.span
-              style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
-              onClick={onCartToggle}
-              aria-label="カート"
-              title="カート"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <FiShoppingCart size={28} />
-              {cart.length > 0 && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  style={{
-                    position: "absolute",
-                    top: -4,
-                    right: -8,
-                    background: "#e00",
-                    color: "#fff",
-                    borderRadius: "50%",
-                    fontSize: 12,
-                    width: 20,
-                    height: 20,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    lineHeight: 1,
-                    padding: 0,
-                  }}
-                >
-                  {cart.reduce((sum, item) => sum + item.quantity, 0)}
-                </motion.span>
-              )}
-            </motion.span>
+            {!isCartPage && (
+              <motion.span
+                style={{
+                  marginLeft: 0,
+                  position: "relative",
+                  cursor: "pointer",
+                }}
+                onClick={onCartToggle}
+                aria-label="カート"
+                title="カート"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FiShoppingCart size={28} />
+                {cart.length > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    style={{
+                      position: "absolute",
+                      top: -4,
+                      right: -8,
+                      background: "#e00",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      fontSize: 12,
+                      width: 20,
+                      height: 20,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      lineHeight: 1,
+                      padding: 0,
+                    }}
+                  >
+                    {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                  </motion.span>
+                )}
+              </motion.span>
+            )}
           </div>
         )}
       </nav>
@@ -233,6 +247,7 @@ export default function App({
             <Header
               onLoginClick={() => setShowLoginModal(true)}
               onCartToggle={handleCartToggle}
+              isCartPage={isCartPage}
             />
             <AnimatePresence mode="wait">
               {showLoginModal && (
