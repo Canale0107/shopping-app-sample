@@ -96,7 +96,7 @@ export default function CartPage() {
                     <td
                       style={{ verticalAlign: "middle", textAlign: "center" }}
                     >
-                      {item.price}円
+                      {item.price.toLocaleString()}円
                     </td>
                     <td
                       style={{ verticalAlign: "middle", textAlign: "center" }}
@@ -121,7 +121,7 @@ export default function CartPage() {
                     <td
                       style={{ verticalAlign: "middle", textAlign: "center" }}
                     >
-                      {item.price * item.quantity}円
+                      {(item.price * item.quantity).toLocaleString()}円
                     </td>
                   </tr>
                 ))}
@@ -135,7 +135,7 @@ export default function CartPage() {
                 marginBottom: 16,
               }}
             >
-              合計: {total}円
+              合計: {total.toLocaleString()}円
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <button

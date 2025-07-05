@@ -9,6 +9,7 @@ import "../styles/global.css";
 import { Modal } from "../components/Modal";
 import { FiUser, FiLogIn, FiLogOut, FiShoppingCart } from "react-icons/fi";
 import { HiOutlineUserCircle } from "react-icons/hi";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Header({ onLoginClick }: { onLoginClick: () => void }) {
   const { data: session, status } = useSession();
@@ -23,7 +24,10 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
     }
   };
   return (
-    <header
+    <motion.header
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
       style={{
         display: "flex",
         justifyContent: "space-between",
@@ -33,17 +37,19 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
       }}
     >
       <Link href="/">
-        <span
+        <motion.span
           className="header-logo"
           style={{ fontWeight: "bold", fontSize: "1.2rem", cursor: "pointer" }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           ショッピングサイト
-        </span>
+        </motion.span>
       </Link>
       <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
         {status === "loading" ? null : session ? (
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <span
+            <motion.span
               style={{
                 fontWeight: "bold",
                 color: "#fff",
@@ -54,10 +60,12 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
               onClick={() => router.push("/profile")}
               title="会員情報"
               aria-label="会員情報"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               ようこそ、{session.user?.name || session.user?.email} さん
-            </span>
-            <span
+            </motion.span>
+            <motion.span
               onClick={() => signOut({ callbackUrl: "/" })}
               style={{
                 cursor: "pointer",
@@ -66,18 +74,24 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
               }}
               title="ログアウト"
               aria-label="ログアウト"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <FiLogOut size={28} />
-            </span>
-            <span
+            </motion.span>
+            <motion.span
               style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
               onClick={() => router.push("/cart")}
               aria-label="カート"
               title="カート"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <FiShoppingCart size={28} />
               {cart.length > 0 && (
-                <span
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
                   style={{
                     position: "absolute",
                     top: -4,
@@ -98,13 +112,13 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
                   }}
                 >
                   {cart.reduce((sum, item) => sum + item.quantity, 0)}
-                </span>
+                </motion.span>
               )}
-            </span>
+            </motion.span>
           </div>
         ) : (
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <span
+            <motion.span
               onClick={onLoginClick}
               style={{
                 cursor: "pointer",
@@ -113,11 +127,13 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
               }}
               title="ログイン"
               aria-label="ログイン"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <FiLogIn size={28} />
-            </span>
+            </motion.span>
             <Link href="/register" legacyBehavior>
-              <a
+              <motion.a
                 className="register-btn"
                 style={{
                   background: "#fff",
@@ -134,19 +150,25 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
                   boxShadow: "0 1px 4px rgba(30,64,175,0.04)",
                   cursor: "pointer",
                 }}
+                whileHover={{ scale: 1.05, background: "#f8fafc" }}
+                whileTap={{ scale: 0.95 }}
               >
                 新規登録
-              </a>
+              </motion.a>
             </Link>
-            <span
+            <motion.span
               style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
               onClick={() => router.push("/cart")}
               aria-label="カート"
               title="カート"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
               <FiShoppingCart size={28} />
               {cart.length > 0 && (
-                <span
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
                   style={{
                     position: "absolute",
                     top: -4,
@@ -167,13 +189,13 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
                   }}
                 >
                   {cart.reduce((sum, item) => sum + item.quantity, 0)}
-                </span>
+                </motion.span>
               )}
-            </span>
+            </motion.span>
           </div>
         )}
       </nav>
-    </header>
+    </motion.header>
   );
 }
 
@@ -182,39 +204,44 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
+
   return (
     <SessionProvider session={session}>
       <CartProvider>
         <Header onLoginClick={() => setShowLoginModal(true)} />
-        {showLoginModal && (
-          <Modal onClose={() => setShowLoginModal(false)}>
-            <button
-              onClick={() => setShowLoginModal(false)}
-              style={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-                fontSize: 18,
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-              }}
-              aria-label="閉じる"
-            >
-              ×
-            </button>
-            <LoginForm onSuccess={() => setShowLoginModal(false)} />
-            <div style={{ marginTop: 16, textAlign: "center" }}>
-              <Link
-                href="/register"
-                style={{ textDecoration: "underline", color: "#0070f3" }}
+        <AnimatePresence mode="wait">
+          {showLoginModal && (
+            <Modal key="login-modal" onClose={() => setShowLoginModal(false)}>
+              <motion.button
                 onClick={() => setShowLoginModal(false)}
+                style={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  fontSize: 18,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+                aria-label="閉じる"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
               >
-                新規登録はこちら
-              </Link>
-            </div>
-          </Modal>
-        )}
+                ×
+              </motion.button>
+              <LoginForm onSuccess={() => setShowLoginModal(false)} />
+              <div style={{ marginTop: 16, textAlign: "center" }}>
+                <Link
+                  href="/register"
+                  style={{ textDecoration: "underline", color: "#0070f3" }}
+                  onClick={() => setShowLoginModal(false)}
+                >
+                  新規登録はこちら
+                </Link>
+              </div>
+            </Modal>
+          )}
+        </AnimatePresence>
         <Component {...pageProps} />
       </CartProvider>
     </SessionProvider>

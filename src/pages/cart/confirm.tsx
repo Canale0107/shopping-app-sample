@@ -108,7 +108,7 @@ export default function CartConfirmPage() {
                   <span style={{ alignSelf: "center" }}>{item.name}</span>
                 </td>
                 <td style={{ verticalAlign: "middle", textAlign: "center" }}>
-                  {item.price}円
+                  {item.price.toLocaleString()}円
                 </td>
                 <td
                   style={{
@@ -120,7 +120,7 @@ export default function CartConfirmPage() {
                   {item.quantity}
                 </td>
                 <td style={{ verticalAlign: "middle", textAlign: "center" }}>
-                  {item.price * item.quantity}円
+                  {(item.price * item.quantity).toLocaleString()}円
                 </td>
               </tr>
             ))}
@@ -134,7 +134,7 @@ export default function CartConfirmPage() {
             marginBottom: 16,
           }}
         >
-          合計: {total}円
+          合計: {total.toLocaleString()}円
         </div>
         {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
         <div
