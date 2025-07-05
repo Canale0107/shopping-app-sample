@@ -10,6 +10,7 @@ import { Modal } from "../components/Modal";
 import { FiUser, FiLogIn, FiLogOut, FiShoppingCart } from "react-icons/fi";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
+import { CartSidebar } from "../components/CartSidebar";
 
 function Header({ onLoginClick }: { onLoginClick: () => void }) {
   const { data: session, status } = useSession();
@@ -204,45 +205,57 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const router = useRouter();
+  const isCartPage = router.pathname.startsWith("/cart");
 
   return (
     <SessionProvider session={session}>
       <CartProvider>
-        <Header onLoginClick={() => setShowLoginModal(true)} />
-        <AnimatePresence mode="wait">
-          {showLoginModal && (
-            <Modal key="login-modal" onClose={() => setShowLoginModal(false)}>
-              <motion.button
-                onClick={() => setShowLoginModal(false)}
-                style={{
-                  position: "absolute",
-                  top: 8,
-                  right: 8,
-                  fontSize: 18,
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-                aria-label="閉じる"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                ×
-              </motion.button>
-              <LoginForm onSuccess={() => setShowLoginModal(false)} />
-              <div style={{ marginTop: 16, textAlign: "center" }}>
-                <Link
-                  href="/register"
-                  style={{ textDecoration: "underline", color: "#0070f3" }}
-                  onClick={() => setShowLoginModal(false)}
+        <div style={{ display: "flex", minHeight: "100vh" }}>
+          <div
+            style={{ flex: 1, marginRight: isCartPage ? 0 : 320, minWidth: 0 }}
+          >
+            <Header onLoginClick={() => setShowLoginModal(true)} />
+            <AnimatePresence mode="wait">
+              {showLoginModal && (
+                <Modal
+                  key="login-modal"
+                  onClose={() => setShowLoginModal(false)}
                 >
-                  新規登録はこちら
-                </Link>
-              </div>
-            </Modal>
-          )}
-        </AnimatePresence>
-        <Component {...pageProps} />
+                  <motion.button
+                    onClick={() => setShowLoginModal(false)}
+                    style={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      fontSize: 18,
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                    aria-label="閉じる"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    ×
+                  </motion.button>
+                  <LoginForm onSuccess={() => setShowLoginModal(false)} />
+                  <div style={{ marginTop: 16, textAlign: "center" }}>
+                    <Link
+                      href="/register"
+                      style={{ textDecoration: "underline", color: "#0070f3" }}
+                      onClick={() => setShowLoginModal(false)}
+                    >
+                      新規登録はこちら
+                    </Link>
+                  </div>
+                </Modal>
+              )}
+            </AnimatePresence>
+            <Component {...pageProps} />
+          </div>
+          {!isCartPage && <CartSidebar />}
+        </div>
       </CartProvider>
     </SessionProvider>
   );
