@@ -153,9 +153,11 @@ export default function Home({
                     textAlign: "center",
                     background: "#fff",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                    cursor: "pointer",
                   }}
                   whileHover="hover"
                   whileTap={clickedButtonId === p.id ? {} : "tap"}
+                  onClick={() => router.push(`/products/${p.id}`)}
                 >
                   {p.imageUrl && (
                     <img
