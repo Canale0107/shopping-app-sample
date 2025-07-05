@@ -74,10 +74,15 @@ export const CartSidebar = ({ onClose }: { onClose: () => void }) => {
               marginBottom: 16,
               fontWeight: 600,
               fontSize: 16,
-              textAlign: "right",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            合計: {total.toLocaleString()}円
+            <span style={{ fontSize: 14, color: "#666" }}>
+              {cart.reduce((sum, item) => sum + item.quantity, 0)}点の商品
+            </span>
+            <span>合計: {total.toLocaleString()}円</span>
           </div>
           <Link
             href="/cart"
@@ -95,7 +100,7 @@ export const CartSidebar = ({ onClose }: { onClose: () => void }) => {
               letterSpacing: 1,
             }}
           >
-            カートを見る
+            カートに移動
           </Link>
           <div style={{ flex: 1 }}>
             {cart.map((item) => (
