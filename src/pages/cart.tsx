@@ -91,7 +91,20 @@ export default function CartPage() {
                           }}
                         />
                       )}
-                      <span style={{ alignSelf: "center" }}>{item.name}</span>
+                      <Link
+                        href={`/products/${item.id}`}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        <span
+                          style={{
+                            alignSelf: "center",
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {item.name}
+                        </span>
+                      </Link>
                     </td>
                     <td
                       style={{ verticalAlign: "middle", textAlign: "center" }}

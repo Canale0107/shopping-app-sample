@@ -130,9 +130,20 @@ export const CartSidebar = ({ onClose }: { onClose: () => void }) => {
                   />
                 )}
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 500, marginBottom: 4 }}>
-                    {item.name}
-                  </div>
+                  <Link
+                    href={`/products/${item.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 500,
+                        marginBottom: 4,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {item.name}
+                    </div>
+                  </Link>
                   <div style={{ fontSize: 13, color: "#555", marginBottom: 4 }}>
                     単価: {item.price.toLocaleString()}円
                   </div>

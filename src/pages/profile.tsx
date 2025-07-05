@@ -1,5 +1,6 @@
 import { getSession, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
+import Link from "next/link";
 import { prisma } from "../lib/prisma";
 import { useState } from "react";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
@@ -131,7 +132,9 @@ export default function Profile({ member, orders }: any) {
               <div style={{ minWidth: 260, flex: 1 }}>
                 <div className="mb-16">
                   <span className="label">現在のポイント</span>
-                  <div className="profile-point">{member.memberpoint.toLocaleString()} pt</div>
+                  <div className="profile-point">
+                    {member.memberpoint.toLocaleString()} pt
+                  </div>
                 </div>
                 <div className="mb-16">
                   <span className="label">会員ID</span>
@@ -258,15 +261,25 @@ export default function Profile({ member, orders }: any) {
                                     />
                                   )}
                                   <div style={{ flex: 1 }}>
-                                    <div
+                                    <Link
+                                      href={`/products/${p.product.id}`}
                                       style={{
-                                        fontWeight: 600,
-                                        fontSize: 16,
-                                        marginBottom: 4,
+                                        textDecoration: "none",
+                                        color: "inherit",
                                       }}
                                     >
-                                      {p.product.name}
-                                    </div>
+                                      <div
+                                        style={{
+                                          fontWeight: 600,
+                                          fontSize: 16,
+                                          marginBottom: 4,
+                                          cursor: "pointer",
+                                          textDecoration: "underline",
+                                        }}
+                                      >
+                                        {p.product.name}
+                                      </div>
+                                    </Link>
                                     <div
                                       style={{
                                         fontSize: 14,
@@ -274,7 +287,8 @@ export default function Profile({ member, orders }: any) {
                                         marginBottom: 2,
                                       }}
                                     >
-                                      価格: {p.price.toLocaleString()} 円　数量: {p.quantity.toLocaleString()} 個
+                                      価格: {p.price.toLocaleString()} 円　数量:{" "}
+                                      {p.quantity.toLocaleString()} 個
                                     </div>
                                     <div
                                       style={{
@@ -283,7 +297,11 @@ export default function Profile({ member, orders }: any) {
                                         marginBottom: 2,
                                       }}
                                     >
-                                      小計: {(p.price * p.quantity).toLocaleString()} 円　ポイント: {(p.point * p.quantity).toLocaleString()} pt
+                                      小計:{" "}
+                                      {(p.price * p.quantity).toLocaleString()}{" "}
+                                      円　ポイント:{" "}
+                                      {(p.point * p.quantity).toLocaleString()}{" "}
+                                      pt
                                     </div>
                                   </div>
                                 </div>
@@ -339,7 +357,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     include: {
       items: {
         include: {
-          product: { select: { name: true, imageUrl: true } },
+          product: { select: { id: true, name: true, imageUrl: true } },
         },
       },
     },
