@@ -12,7 +12,13 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { CartSidebar } from "../components/CartSidebar";
 
-function Header({ onLoginClick }: { onLoginClick: () => void }) {
+function Header({
+  onLoginClick,
+  onCartToggle,
+}: {
+  onLoginClick: () => void;
+  onCartToggle: () => void;
+}) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { cart } = useCart();
@@ -82,7 +88,7 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
             </motion.span>
             <motion.span
               style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
-              onClick={() => router.push("/cart")}
+              onClick={onCartToggle}
               aria-label="カート"
               title="カート"
               whileHover={{ scale: 1.1 }}
@@ -159,7 +165,7 @@ function Header({ onLoginClick }: { onLoginClick: () => void }) {
             </Link>
             <motion.span
               style={{ marginLeft: 0, position: "relative", cursor: "pointer" }}
-              onClick={() => router.push("/cart")}
+              onClick={onCartToggle}
               aria-label="カート"
               title="カート"
               whileHover={{ scale: 1.1 }}
@@ -205,17 +211,29 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showCartSidebar, setShowCartSidebar] = useState(false);
   const router = useRouter();
   const isCartPage = router.pathname.startsWith("/cart");
+
+  const handleCartToggle = () => {
+    setShowCartSidebar(!showCartSidebar);
+  };
 
   return (
     <SessionProvider session={session}>
       <CartProvider>
         <div style={{ display: "flex", minHeight: "100vh" }}>
           <div
-            style={{ flex: 1, marginRight: isCartPage ? 0 : 320, minWidth: 0 }}
+            style={{
+              flex: 1,
+              marginRight: isCartPage || !showCartSidebar ? 0 : 320,
+              minWidth: 0,
+            }}
           >
-            <Header onLoginClick={() => setShowLoginModal(true)} />
+            <Header
+              onLoginClick={() => setShowLoginModal(true)}
+              onCartToggle={handleCartToggle}
+            />
             <AnimatePresence mode="wait">
               {showLoginModal && (
                 <Modal
@@ -254,7 +272,9 @@ export default function App({
             </AnimatePresence>
             <Component {...pageProps} />
           </div>
-          {!isCartPage && <CartSidebar />}
+          {!isCartPage && showCartSidebar && (
+            <CartSidebar onClose={() => setShowCartSidebar(false)} />
+          )}
         </div>
       </CartProvider>
     </SessionProvider>
