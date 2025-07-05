@@ -67,39 +67,26 @@ export default function Home({
   const handleCategorySelect = (categoryId: string) => {
     if (currentCategoryId === categoryId) return; // 同じカテゴリの場合は何もしない
 
-    setIsLoading(true);
-
     // URLを更新
     router
       .push(`/?category=${categoryId}`, undefined, {
         shallow: true,
         scroll: false,
       })
-      .then(() => {
-        // ローディングを短時間で終了
-        setTimeout(() => setIsLoading(false), 100);
-      })
       .catch((error) => {
         console.error("Navigation error:", error);
-        setIsLoading(false);
       });
   };
 
   // カテゴリ一覧に戻る処理
   const handleBackToCategories = () => {
-    setIsLoading(true);
-
     router
       .push("/", undefined, {
         shallow: true,
         scroll: false,
       })
-      .then(() => {
-        setTimeout(() => setIsLoading(false), 100);
-      })
       .catch((error) => {
         console.error("Navigation error:", error);
-        setIsLoading(false);
       });
   };
 
@@ -135,9 +122,7 @@ export default function Home({
           </motion.button>
         </motion.div>
 
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : (
+        {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -230,7 +215,7 @@ export default function Home({
               ))
             )}
           </motion.div>
-        )}
+        }
       </motion.div>
     );
   }
@@ -251,9 +236,7 @@ export default function Home({
         カテゴリ一覧
       </motion.h1>
 
-      {isLoading ? (
-        <LoadingSpinner />
-      ) : (
+      {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -308,7 +291,7 @@ export default function Home({
             );
           })}
         </motion.div>
-      )}
+      }
     </motion.div>
   );
 }
