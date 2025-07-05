@@ -14,10 +14,54 @@ export default function Home({
   const { addToCart } = useCart();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [clickedButtonId, setClickedButtonId] = useState<string | null>(null);
 
   // router.queryから直接カテゴリIDを取得
   const currentCategoryId =
     (router.query.category as string) || selectedCategoryId;
+
+  // カードアニメーションのvariants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.05,
+        duration: 0.3,
+      },
+    }),
+    hover: {
+      scale: 1.02,
+      transition: { duration: 0.2 },
+    },
+    tap: {
+      scale: 0.98,
+      transition: { duration: 0.1 },
+    },
+  };
+
+  // カテゴリアニメーションのvariants
+  const categoryVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.05,
+        duration: 0.3,
+      },
+    }),
+    hover: {
+      scale: 1.05,
+      boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+      transition: { duration: 0.2 },
+    },
+    tap: {
+      scale: 0.95,
+      transition: { duration: 0.1 },
+    },
+  };
 
   // カテゴリ選択時の処理
   const handleCategorySelect = (categoryId: string) => {
@@ -112,9 +156,10 @@ export default function Home({
               filteredProducts.map((p: any, index: number) => (
                 <motion.div
                   key={p.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  custom={index}
+                  initial="hidden"
+                  animate="visible"
+                  variants={cardVariants}
                   style={{
                     border: "1px solid #ccc",
                     borderRadius: 8,
@@ -124,11 +169,11 @@ export default function Home({
                     background: "#fff",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                   }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover="hover"
+                  whileTap={clickedButtonId === p.id ? {} : "tap"}
                 >
                   {p.imageUrl && (
-                    <motion.img
+                    <img
                       src={p.imageUrl}
                       alt={p.name}
                       style={{
@@ -137,8 +182,6 @@ export default function Home({
                         objectFit: "contain",
                         marginBottom: 8,
                       }}
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.2 }}
                     />
                   )}
                   <div style={{ fontWeight: "bold", marginBottom: 8 }}>
@@ -165,14 +208,19 @@ export default function Home({
                       cursor: "pointer",
                       fontWeight: "500",
                     }}
-                    onClick={() =>
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setClickedButtonId(p.id);
                       addToCart({
                         id: p.id,
                         name: p.name,
                         price: p.price,
                         imageUrl: p.imageUrl,
-                      })
-                    }
+                      });
+                      // 少し遅延してからリセット
+                      setTimeout(() => setClickedButtonId(null), 150);
+                    }}
                     whileHover={{ scale: 1.05, background: "#0051a8" }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -219,9 +267,10 @@ export default function Home({
             return (
               <motion.div
                 key={cat.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                custom={index}
+                initial="hidden"
+                animate="visible"
+                variants={categoryVariants}
                 onClick={() => handleCategorySelect(cat.id)}
                 style={{
                   border: "1px solid #ccc",
@@ -233,13 +282,10 @@ export default function Home({
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                   textAlign: "center",
                 }}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
-                }}
-                whileTap={{ scale: 0.95 }}
+                whileHover="hover"
+                whileTap="tap"
               >
-                <motion.img
+                <img
                   src={imageUrl}
                   alt={cat.name}
                   style={{
@@ -248,8 +294,6 @@ export default function Home({
                     objectFit: "contain",
                     marginBottom: 8,
                   }}
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
                 />
                 <div
                   style={{
