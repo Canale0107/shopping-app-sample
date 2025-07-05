@@ -14,6 +14,10 @@ interface Product {
   imageUrl: string | null;
   description: string | null;
   categoryId: string;
+  category: {
+    id: string;
+    name: string;
+  };
 }
 
 interface ProductDetailProps {
@@ -79,7 +83,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         animate={{ opacity: 1, x: 0 }}
         style={{ marginBottom: "2rem" }}
       >
-        <Link href="/">
+        <Link href={`/?category=${product.categoryId}`}>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -96,7 +100,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             }}
           >
             <FiArrowLeft size={16} />
-            戻る
+            {product.category.name}に戻る
           </motion.button>
         </Link>
       </motion.div>
@@ -294,6 +298,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const product = await prisma.product.findUnique({
       where: { id },
+      include: {
+        category: true,
+      },
     });
 
     return {

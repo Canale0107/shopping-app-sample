@@ -80,14 +80,10 @@ export default function Home({
 
   // カテゴリ一覧に戻る処理
   const handleBackToCategories = () => {
-    router
-      .push("/", undefined, {
-        shallow: true,
-        scroll: false,
-      })
-      .catch((error) => {
-        console.error("Navigation error:", error);
-      });
+    // 直接ルートパスに遷移してクエリパラメータをクリア
+    router.push("/").catch((error) => {
+      console.error("Navigation error:", error);
+    });
   };
 
   // 商品一覧表示
