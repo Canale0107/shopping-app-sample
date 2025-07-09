@@ -1,5 +1,17 @@
 # ショッピングサイト サンプル（Next.js + Prisma + PostgreSQL）
 
+## 実際の画面
+
+### 商品検索結果画面
+![商品検索結果画面](asset/demo-1.png)
+
+### ショッピングカート画面
+![ショッピングカート画面](asset/demo-2.png)
+
+### 会員情報照会画面
+![会員情報照会画面](asset/demo-3.png)
+
+
 ## 前提条件
 
 - Docker & Docker Compose
