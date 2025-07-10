@@ -20,6 +20,20 @@ const CATEGORY_MAP: Record<string, string> = {
   ankleboot: "アンクルブーツ",
 };
 
+// カテゴリごとの現実的な価格候補リスト
+const CATEGORY_PRICE_CANDIDATES: Record<string, number[]> = {
+  tshirt: [980, 1280, 1480, 1980, 2480, 2980, 3480],
+  trouser: [1980, 2480, 2980, 3980, 4980, 5980],
+  pullover: [1980, 2480, 2980, 3980, 4980],
+  dress: [2980, 3980, 4980, 6980, 9800, 12800],
+  coat: [4980, 6980, 9800, 12800, 15800, 19800],
+  sandal: [980, 1480, 1980, 2480, 2980, 3980],
+  shirt: [1280, 1480, 1980, 2480, 2980, 3980, 4980],
+  sneaker: [2980, 3980, 4980, 6980, 9800, 12800, 14800],
+  bag: [1980, 2980, 3980, 4980, 6980, 9800, 12800, 19800],
+  ankleboot: [3980, 4980, 6980, 9800, 12800, 15800, 17800],
+};
+
 async function main() {
   // ESM形式で__dirnameの代わり
   const __filename = fileURLToPath(import.meta.url);
@@ -53,10 +67,19 @@ async function main() {
     const name = `${CATEGORY_MAP[key]} ${parseInt(num, 10)}`;
     // 商品ごとに異なるポイント設定（例: 50〜200pt）
     const point = 50 + ((parseInt(num, 10) * 10) % 151); // 50, 60, ... 200, 50, ...
+    // カテゴリごとの価格候補からランダムに選択
+    const candidates = CATEGORY_PRICE_CANDIDATES[key] || [
+      1980, 2980, 3980, 4980,
+    ];
+    const price =
+      candidates[
+        (parseInt(num, 10) + Math.floor(Math.random() * candidates.length)) %
+          candidates.length
+      ];
     await prisma.product.create({
       data: {
         name,
-        price: 1000,
+        price,
         point,
         imageUrl: `/images/products/${file}`,
         categoryId,
