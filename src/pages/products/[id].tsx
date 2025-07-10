@@ -262,7 +262,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleAddToCart}
-              disabled={isAddingToCart}
               style={{
                 width: "100%",
                 background: "#2563eb",
@@ -281,7 +280,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               }}
             >
               <FiShoppingCart size={20} />
-              {isAddingToCart ? "追加中..." : "カートに追加"}
+              カートに追加
             </motion.button>
           </motion.div>
         </div>
