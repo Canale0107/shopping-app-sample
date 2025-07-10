@@ -23,8 +23,8 @@ os.makedirs(SAVE_DIR, exist_ok=True)
 # fashion-MNISTデータセットをロード
 (x_train, y_train), (_, _) = fashion_mnist.load_data()
 
-# 各カテゴリ3枚ずつ保存
-num_per_category = 3
+# 各カテゴリ15枚ずつ保存
+num_per_category = 15
 saved_count = {label: 0 for label in range(10)}
 
 for img, label in zip(x_train, y_train):

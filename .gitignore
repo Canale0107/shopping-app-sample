@@ -6,3 +6,4 @@ db_data/
 out/
 .DS_Store
 *.log
+.venv/

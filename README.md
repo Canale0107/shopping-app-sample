@@ -3,14 +3,16 @@
 ## 実際の画面
 
 ### 商品検索結果画面
+
 ![商品検索結果画面](asset/demo-1.png)
 
 ### ショッピングカート画面
+
 ![ショッピングカート画面](asset/demo-2.png)
 
 ### 会員情報照会画面
-![会員情報照会画面](asset/demo-3.png)
 
+![会員情報照会画面](asset/demo-3.png)
 
 ## 前提条件
 
@@ -123,3 +125,35 @@
    docker compose exec app npx prisma studio --port 5555
    ```
 2. ブラウザで http://localhost:5555 にアクセス
+
+---
+
+## ファッション MNIST 画像生成（Python）
+
+`fashion_mnist_to_products.py` を使ってファッション MNIST 画像をカテゴリごとに保存できます。
+
+### 仮想環境の作成とパッケージインストール
+
+1. プロジェクトルートで以下を実行し、Python 仮想環境を作成・有効化します。
+
+   ```sh
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+2. 必要なパッケージをインストールします。
+
+   ```sh
+   pip install --upgrade pip
+   pip install tensorflow pillow
+   ```
+
+### スクリプトの実行
+
+仮想環境が有効な状態で、以下のコマンドを実行してください。
+
+```sh
+python fashion_mnist_to_products.py
+```
+
+実行後、`public/images/products` ディレクトリに各カテゴリ 15 枚ずつ画像が保存されます。
