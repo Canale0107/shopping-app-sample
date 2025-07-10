@@ -15,6 +15,7 @@ export default function Home({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [clickedButtonId, setClickedButtonId] = useState<string | null>(null);
+  const [isCartButtonPressed, setIsCartButtonPressed] = useState(false);
 
   // router.queryから直接カテゴリIDを取得
   const currentCategoryId =
@@ -152,7 +153,7 @@ export default function Home({
                     cursor: "pointer",
                   }}
                   whileHover="hover"
-                  whileTap={clickedButtonId === p.id ? {} : "tap"}
+                  whileTap={!isCartButtonPressed ? "tap" : undefined}
                   onClick={() => router.push(`/products/${p.id}`)}
                 >
                   {p.imageUrl && (
@@ -191,6 +192,9 @@ export default function Home({
                       cursor: "pointer",
                       fontWeight: "500",
                     }}
+                    onPointerDown={() => setIsCartButtonPressed(true)}
+                    onPointerUp={() => setIsCartButtonPressed(false)}
+                    onPointerLeave={() => setIsCartButtonPressed(false)}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -201,7 +205,6 @@ export default function Home({
                         price: p.price,
                         imageUrl: p.imageUrl,
                       });
-                      // 少し遅延してからリセット
                       setTimeout(() => setClickedButtonId(null), 150);
                     }}
                     whileHover={{ scale: 1.05, background: "#0051a8" }}
