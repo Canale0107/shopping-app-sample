@@ -1,10 +1,33 @@
 import { useCart } from "../lib/CartContext";
 import { FiShoppingCart, FiTrash2, FiX, FiMinus, FiPlus } from "react-icons/fi";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export const CartSidebar = ({ onClose }: { onClose: () => void }) => {
   const { cart, removeFromCart, updateQuantity } = useCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const [pointMap, setPointMap] = useState<{ [id: string]: number }>({});
+  const totalPoint = cart.reduce(
+    (sum, item) => sum + (pointMap[item.id] || 0) * item.quantity,
+    0
+  );
+
+  // 商品ポイントを取得
+  useEffect(() => {
+    if (cart.length === 0) return;
+    const fetchPoints = async () => {
+      const res = await fetch("/api/products/points", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: cart.map((item) => item.id) }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPointMap(data);
+      }
+    };
+    fetchPoints();
+  }, [cart]);
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -83,6 +106,16 @@ export const CartSidebar = ({ onClose }: { onClose: () => void }) => {
               {cart.reduce((sum, item) => sum + item.quantity, 0)}点の商品
             </span>
             <span>合計: {total.toLocaleString()}円</span>
+          </div>
+          <div
+            style={{
+              textAlign: "right",
+              fontWeight: 500,
+              fontSize: 15,
+              marginBottom: 8,
+            }}
+          >
+            合計ポイント: {totalPoint.toLocaleString()}pt
           </div>
           <Link
             href="/cart"
@@ -234,6 +267,16 @@ export const CartSidebar = ({ onClose }: { onClose: () => void }) => {
                     }}
                   >
                     小計: {(item.price * item.quantity).toLocaleString()}円
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      color: "#2563eb",
+                      marginTop: 2,
+                      textAlign: "right",
+                    }}
+                  >
+                    ポイント小計: {(pointMap[item.id] || 0) * item.quantity}pt
                   </div>
                 </div>
                 <button

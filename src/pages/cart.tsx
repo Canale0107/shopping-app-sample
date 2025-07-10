@@ -2,11 +2,33 @@ import { useCart } from "../lib/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiX } from "react-icons/fi";
+import { useEffect, useState } from "react";
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const router = useRouter();
+  const [pointMap, setPointMap] = useState<{ [id: string]: number }>({});
+  const totalPoint = cart.reduce(
+    (sum, item) => sum + (pointMap[item.id] || 0) * item.quantity,
+    0
+  );
+  // 商品ポイントを取得
+  useEffect(() => {
+    if (cart.length === 0) return;
+    const fetchPoints = async () => {
+      const res = await fetch("/api/products/points", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: cart.map((item) => item.id) }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPointMap(data);
+      }
+    };
+    fetchPoints();
+  }, [cart]);
 
   return (
     <div className="main-area">
@@ -43,6 +65,7 @@ export default function CartPage() {
                   <th>価格</th>
                   <th>数量</th>
                   <th>小計</th>
+                  <th>ポイント小計</th>
                 </tr>
               </thead>
               <tbody>
@@ -136,10 +159,25 @@ export default function CartPage() {
                     >
                       {(item.price * item.quantity).toLocaleString()}円
                     </td>
+                    <td
+                      style={{ verticalAlign: "middle", textAlign: "center" }}
+                    >
+                      {(pointMap[item.id] || 0) * item.quantity}pt
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div
+              style={{
+                textAlign: "right",
+                fontWeight: "bold",
+                fontSize: 18,
+                marginBottom: 8,
+              }}
+            >
+              合計ポイント: {totalPoint.toLocaleString()}pt
+            </div>
             <div
               style={{
                 textAlign: "right",

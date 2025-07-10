@@ -18,6 +18,7 @@ interface Product {
     id: string;
     name: string;
   };
+  point?: number;
 }
 
 interface ProductDetailProps {
@@ -190,6 +191,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 {product.description}
               </p>
             )}
+
+            {/* 付与ポイント */}
+            <div style={{ fontSize: 16, color: "#2563eb", marginBottom: 8 }}>
+              付与ポイント: {product.point?.toLocaleString() ?? 0} pt
+            </div>
 
             {/* 数量選択 */}
             <div style={{ marginBottom: "2rem" }}>
