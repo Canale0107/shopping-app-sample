@@ -38,11 +38,15 @@ function Header({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         padding: "1rem",
         marginBottom: "2rem",
+        background: "linear-gradient(90deg, #2563eb 0%, #1e40af 100%)",
       }}
     >
       <Link href="/">
