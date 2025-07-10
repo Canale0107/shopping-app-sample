@@ -41,6 +41,7 @@ async function main() {
   }
 
   // 商品を全削除してから投入（再現性のため）
+  await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.product.deleteMany();
 
@@ -50,10 +51,13 @@ async function main() {
     const [key, num] = file.replace(".png", "").split("_");
     const categoryId = categoryIds[key];
     const name = `${CATEGORY_MAP[key]} ${parseInt(num, 10)}`;
+    // 商品ごとに異なるポイント設定（例: 50〜200pt）
+    const point = 50 + ((parseInt(num, 10) * 10) % 151); // 50, 60, ... 200, 50, ...
     await prisma.product.create({
       data: {
         name,
         price: 1000,
+        point,
         imageUrl: `/images/products/${file}`,
         categoryId,
       },
@@ -77,17 +81,26 @@ async function main() {
   });
 
   // ダミー注文
-  await prisma.order.create({
-    data: {
-      memberid: member.memberid,
-      orderdate: new Date(),
-      creditcardid: "4111111111111111",
-      productid: (await prisma.product.findFirst())?.id || "",
-      quantity: 2,
-      price: 1000,
-      point: 10,
-    },
-  });
+  const firstProduct = await prisma.product.findFirst();
+  if (firstProduct) {
+    await prisma.order.create({
+      data: {
+        memberid: member.memberid,
+        orderdate: new Date(),
+        creditcardid: "4111111111111111",
+        items: {
+          create: [
+            {
+              productid: firstProduct.id,
+              quantity: 2,
+              price: firstProduct.price,
+              point: firstProduct.point,
+            },
+          ],
+        },
+      },
+    });
+  }
 
   console.log("画像と一致した商品データ・ダミー会員・注文を作成しました");
 }

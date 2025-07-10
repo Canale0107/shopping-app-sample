@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Product" ADD COLUMN     "point" INTEGER NOT NULL DEFAULT 0;

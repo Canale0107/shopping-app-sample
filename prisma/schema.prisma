@@ -29,6 +29,7 @@ model Product {
   id          String   @id @default(uuid())
   name        String
   price       Int
+  point       Int      @default(0) // 付与ポイント数
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   orderItems  OrderItem[]
