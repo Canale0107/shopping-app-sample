@@ -14,7 +14,7 @@ export default function CartConfirmPage() {
   const [error, setError] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [memberPoint, setMemberPoint] = useState<number>(0);
-  const [usePoint, setUsePoint] = useState<number>(0);
+  const [usePoint, setUsePoint] = useState<string>("0");
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   // 商品ごとのポイント合計（Product.point * quantity）
@@ -52,7 +52,7 @@ export default function CartConfirmPage() {
       });
   }, [session]);
   // 割引後の合計
-  const finalTotal = Math.max(0, total - usePoint);
+  const finalTotal = Math.max(0, total - (Number(usePoint) || 0));
 
   const handleOrder = async () => {
     setError("");
@@ -61,7 +61,7 @@ export default function CartConfirmPage() {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: cart, usePoint }),
+        body: JSON.stringify({ items: cart, usePoint: Number(usePoint) || 0 }),
         credentials: "include",
       });
       if (res.ok) {
@@ -209,14 +209,16 @@ export default function CartConfirmPage() {
               min={0}
               max={Math.min(memberPoint, total)}
               value={usePoint}
-              onChange={(e) =>
-                setUsePoint(
-                  Math.max(
-                    0,
-                    Math.min(Number(e.target.value), memberPoint, total)
-                  )
-                )
-              }
+              onChange={(e) => {
+                // 数値のみ許容、空欄も許容
+                const val = e.target.value;
+                if (val === "" || /^\d+$/.test(val)) {
+                  setUsePoint(val);
+                }
+              }}
+              onBlur={() => {
+                if (usePoint === "") setUsePoint("0");
+              }}
               style={{ width: 100, fontSize: 16, marginLeft: 8 }}
             />{" "}
             pt
