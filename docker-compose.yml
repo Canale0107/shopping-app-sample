@@ -17,6 +17,8 @@ services:
       - "5555:5555"
     environment:
       DATABASE_URL: postgres://postgres:password@db:5432/shopping
+    env_file:
+      - .env
     volumes:
       - ./src:/app/src
     depends_on:
