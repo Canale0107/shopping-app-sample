@@ -217,7 +217,15 @@ export default function CartConfirmPage() {
                 }
               }}
               onBlur={() => {
-                if (usePoint === "") setUsePoint("0");
+                if (usePoint === "") {
+                  setUsePoint("0");
+                } else {
+                  const maxUsable = Math.min(memberPoint, total);
+                  const valNum = Number(usePoint);
+                  if (valNum > maxUsable) {
+                    setUsePoint(String(maxUsable));
+                  }
+                }
               }}
               style={{ width: 100, fontSize: 16, marginLeft: 8 }}
             />{" "}
